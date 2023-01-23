@@ -8,6 +8,7 @@ packages = [{include = "who_cares"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+drawsvg = "^1.9.0"
 
 
 [build-system]
