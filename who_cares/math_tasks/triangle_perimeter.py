@@ -35,7 +35,7 @@ class TrianglePerimeterTask(MathTask):
 
     @property
     def vector(self) -> draw.Drawing:
-        d = draw.Drawing(10, 10, origin="center")
+        d = draw.Drawing(20, 20, origin="center")
 
         side_2_size = self._params.side_1_size * 2
         side_3_size = side_2_size - self._params.side_3_side_2_diff
@@ -44,15 +44,21 @@ class TrianglePerimeterTask(MathTask):
             self._params.side_1_size, side_2_size, side_3_size
         )
 
-        p1 = Point(a.x, a.y, 0.025, "red")
-        p2 = Point(b.x, b.y, 0.025, "red")
-        p3 = Point(c.x, c.y, 0.025, "red")
+        p1 = Point(a.x, a.y, 0.05, "red")
+        p2 = Point(b.x, b.y, 0.05, "red")
+        p3 = Point(c.x, c.y, 0.05, "red")
 
         line1 = Line(a.x, a.y, b.x, b.y, 0.025, "red")
         line2 = Line(b.x, b.y, c.x, c.y, 0.025, "red")
         line3 = Line(c.x, c.y, a.x, a.y, 0.025, "red")
 
-        for el in (p1, p2, p3, line1, line2, line3):
+        points_names = list(self._params.triangle)
+
+        point_a = draw.Text(points_names[0], fontSize=1, x=a.x, y=a.y)
+        point_b = draw.Text(points_names[1], fontSize=1, x=b.x, y=b.y)
+        point_c = draw.Text(points_names[2], fontSize=1, x=c.x, y=c.y)
+
+        for el in (p1, p2, p3, line1, line2, line3, point_a, point_b, point_c):
             d.append(el)
 
         return d

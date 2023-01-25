@@ -16,7 +16,7 @@ class MathTask(abc.ABC):
 
     @property
     def prompt(self) -> str:
-        return self._prompt_template.format(asdict(self._params))
+        return self._prompt_template.format(**asdict(self._params))
 
     @property
     @abc.abstractmethod
