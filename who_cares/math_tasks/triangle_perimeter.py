@@ -24,7 +24,7 @@ class TrianglePerimeterTask(MathTask):
     _prompt_template = """
         Сторона {side_1} треугольника {triangle} равна {side_1_size} {units_1}, 
         сторона {side_2} вдвое больше стороны {side_1}, 
-        а сторона {side_3} на {side_3_side_2_diff} {units_1} меньше сторона {side_2}.
+        а сторона {side_3} на {side_3_side_2_diff} {units_1} меньше стороны {side_2}.
         Найдите периметр треугольника {triangle}.
     """
 
@@ -35,7 +35,7 @@ class TrianglePerimeterTask(MathTask):
 
     @property
     def vector(self) -> draw.Drawing:
-        d = draw.Drawing(20, 20, origin="center")
+        d = draw.Drawing(100, 100, origin="center")
 
         side_2_size = self._params.side_1_size * 2
         side_3_size = side_2_size - self._params.side_3_side_2_diff
@@ -48,9 +48,9 @@ class TrianglePerimeterTask(MathTask):
         p2 = Point(b.x, b.y, 0.05, "red")
         p3 = Point(c.x, c.y, 0.05, "red")
 
-        line1 = Line(a.x, a.y, b.x, b.y, 0.025, "red")
-        line2 = Line(b.x, b.y, c.x, c.y, 0.025, "red")
-        line3 = Line(c.x, c.y, a.x, a.y, 0.025, "red")
+        line_ab = Line(a.x, a.y, b.x, b.y, 0.025, "red")
+        line_bc = Line(b.x, b.y, c.x, c.y, 0.025, "red")
+        line_ca = Line(c.x, c.y, a.x, a.y, 0.025, "red")
 
         points_names = list(self._params.triangle)
 
@@ -58,7 +58,7 @@ class TrianglePerimeterTask(MathTask):
         point_b = draw.Text(points_names[1], fontSize=1, x=b.x, y=b.y)
         point_c = draw.Text(points_names[2], fontSize=1, x=c.x, y=c.y)
 
-        for el in (p1, p2, p3, line1, line2, line3, point_a, point_b, point_c):
+        for el in (p1, p2, p3, line_ab, line_bc, line_ca, point_a, point_b, point_c):
             d.append(el)
 
         return d

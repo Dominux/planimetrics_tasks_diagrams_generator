@@ -11,7 +11,7 @@ def get_triangle_coordinates(
     size_ac: Number,
 ) -> Tuple[Coords, Coords, Coords]:
     a = Coords(0, 0)
-    b = Coords(0, size_ab)
+    b = Coords(size_ab, 0)
 
     cx = (size_ac**2 - size_bc**2 + size_ab**2) / (2 * size_ab)
     cy = math.sqrt(size_ac**2 - cx**2)
