@@ -1,24 +1,29 @@
 import unittest
 
-from who_cares.math_tasks import TrianglePerimeterTask, TrianglePerimeterParams
+from who_cares.helpers.functions import get_task_path
+from who_cares.math_tasks import (
+    TrianglePerimeterTask,
+    TrianglePerimeterTaskGenerator,
+)
 
 
 class TestTrianglePerimetersTask(unittest.TestCase):
     def test_triangle_perimeters_task(self):
-        params = TrianglePerimeterParams(
-            triangle="ABC",
-            units_1="см",
-            side_1="AB",
-            side_2="BC",
-            side_3="AC",
-            side_1_size=7,
-            side_3_side_2_diff=5,
-        )
-        task = TrianglePerimeterTask(params)
+        path = get_task_path(TrianglePerimeterTask)
 
-        # Saving prompt
-        with open("lmao.txt", "w") as f:
-            f.write(task.prompt)
+        for i in range(10):
+            # Creating path
+            path_i = path / str(i)
+            path_i.mkdir(parents=True, exist_ok=True)
+            filepath = path_i / str(TrianglePerimeterTask._task_number)
 
-        # Saving vector
-        task.vector.saveSvg("lmao.svg")
+            # Generating params and task
+            params = TrianglePerimeterTaskGenerator.gen_params()
+            task = TrianglePerimeterTask(params)
+
+            # Saving prompt
+            with filepath.with_suffix(".txt").open("w") as f:
+                f.write(task.prompt)
+
+            # Saving vector
+            task.vector.saveSvg(filepath.with_suffix(".svg"))

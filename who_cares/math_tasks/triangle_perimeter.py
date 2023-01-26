@@ -1,11 +1,13 @@
+import random
 from dataclasses import dataclass
 from numbers import Number
 
 import drawSvg as draw
 
 from who_cares.helpers import get_triangle_coordinates
+from who_cares.helpers.functions import get_random_letters, get_random_units
 
-from .base import MathTask
+from ..base import MathTask, MathTaskGenerator
 from who_cares.primitives import Point, Line
 
 
@@ -15,16 +17,18 @@ class TrianglePerimeterParams:
     side_2: str
     triangle: str
     side_1_size: Number
-    units_1: str
+    units: str
     side_3: str
     side_3_side_2_diff: Number
 
 
 class TrianglePerimeterTask(MathTask):
+    _task_number = 90
+
     _prompt_template = """
-        Сторона {side_1} треугольника {triangle} равна {side_1_size} {units_1}, 
+        Сторона {side_1} треугольника {triangle} равна {side_1_size} {units}, 
         сторона {side_2} вдвое больше стороны {side_1}, 
-        а сторона {side_3} на {side_3_side_2_diff} {units_1} меньше стороны {side_2}.
+        а сторона {side_3} на {side_3_side_2_diff} {units} меньше стороны {side_2}.
         Найдите периметр треугольника {triangle}.
     """
 
@@ -62,3 +66,30 @@ class TrianglePerimeterTask(MathTask):
             d.append(el)
 
         return d
+
+
+class TrianglePerimeterTaskGenerator(MathTaskGenerator):
+    @staticmethod
+    def gen_params() -> TrianglePerimeterParams:
+        points = get_random_letters(3)
+
+        side_1 = f"{points[0]}{points[1]}"
+        side_2 = f"{points[1]}{points[2]}"
+        side_3 = f"{points[2]}{points[0]}"
+
+        triangle = "".join(points)
+
+        side_1_size = random.randint(1, 20)
+        side_3_side_2_diff = random.randint(1, side_1_size * 2 - 1)
+
+        units = get_random_units()
+
+        return TrianglePerimeterParams(
+            side_1=side_1,
+            side_2=side_2,
+            side_3=side_3,
+            triangle=triangle,
+            side_1_size=side_1_size,
+            side_3_side_2_diff=side_3_side_2_diff,
+            units=units,
+        )

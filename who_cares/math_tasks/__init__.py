@@ -1,1 +1,5 @@
-from .triangle_perimeter import TrianglePerimeterTask, TrianglePerimeterParams
+from .triangle_perimeter import (
+    TrianglePerimeterParams,
+    TrianglePerimeterTask,
+    TrianglePerimeterTaskGenerator,
+)
