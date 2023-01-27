@@ -7,12 +7,12 @@ import drawSvg as draw
 from math_tasks_generator.helpers import get_triangle_coordinates
 from math_tasks_generator.helpers.functions import get_random_letters, get_random_units
 
-from ..base import MathTask, MathTaskGenerator
+from math_tasks_generator.base import MathTask, MathTaskGenerator
 from math_tasks_generator.primitives import Point, Line
 
 
 @dataclass
-class TrianglePerimeterParams:
+class Task90Params:
     side_1: str
     side_2: str
     triangle: str
@@ -22,7 +22,7 @@ class TrianglePerimeterParams:
     side_3_side_2_diff: Number
 
 
-class TrianglePerimeterTask(MathTask):
+class Task90(MathTask):
     _task_number = 90
 
     _prompt_template = """
@@ -32,7 +32,7 @@ class TrianglePerimeterTask(MathTask):
         Найдите периметр треугольника {triangle}.
     """
 
-    def __init__(self, params: TrianglePerimeterParams, *args, **kwargs) -> None:
+    def __init__(self, params: Task90Params, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
         self._params = params
@@ -68,9 +68,9 @@ class TrianglePerimeterTask(MathTask):
         return d
 
 
-class TrianglePerimeterTaskGenerator(MathTaskGenerator):
+class Task90Generator(MathTaskGenerator):
     @staticmethod
-    def gen_params() -> TrianglePerimeterParams:
+    def gen_params() -> Task90Params:
         points = get_random_letters(3)
 
         side_1 = f"{points[0]}{points[1]}"
@@ -84,7 +84,7 @@ class TrianglePerimeterTaskGenerator(MathTaskGenerator):
 
         units = get_random_units()
 
-        return TrianglePerimeterParams(
+        return Task90Params(
             side_1=side_1,
             side_2=side_2,
             side_3=side_3,
