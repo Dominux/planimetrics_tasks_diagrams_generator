@@ -1,18 +1,24 @@
 import abc
 from dataclasses import asdict
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 import drawSvg as draw
 
 
-class MathTask(abc.ABC):
+Params = TypeVar("Params")
+
+
+class MathTask(Generic[Params], metaclass=abc.ABCMeta):
     """
     Base class for math tasks
     """
 
     _task_number: int
-    _params: Any
+    _params: Params
     _prompt_template: str = ""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
 
     @property
     def prompt(self) -> str:
@@ -24,11 +30,11 @@ class MathTask(abc.ABC):
         ...
 
 
-class MathTaskGenerator(abc.ABC):
+class MathTaskGenerator(Generic[Params], metaclass=abc.ABCMeta):
     """
     Base class for math task generators
     """
 
     @abc.abstractstaticmethod
-    def gen_params() -> Any:
+    def gen_params() -> Params:
         ...

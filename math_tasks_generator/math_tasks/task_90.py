@@ -22,7 +22,7 @@ class Task90Params:
     side_3_side_2_diff: Number
 
 
-class Task90(MathTask):
+class Task90(MathTask[Task90Params]):
     _task_number = 90
 
     _prompt_template = """
@@ -68,9 +68,9 @@ class Task90(MathTask):
         return d
 
 
-class Task90Generator(MathTaskGenerator):
+class Task90Generator(MathTaskGenerator[Task90Params]):
     @staticmethod
-    def gen_params() -> Task90Params:
+    def gen_params():
         points = get_random_letters(3)
 
         side_1 = f"{points[0]}{points[1]}"
