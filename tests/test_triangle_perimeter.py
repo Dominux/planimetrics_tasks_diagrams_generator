@@ -1,7 +1,7 @@
 import unittest
 
-from who_cares.helpers.functions import get_task_path
-from who_cares.math_tasks import (
+from math_tasks_generator.helpers.functions import get_task_path
+from math_tasks_generator.math_tasks import (
     TrianglePerimeterTask,
     TrianglePerimeterTaskGenerator,
 )

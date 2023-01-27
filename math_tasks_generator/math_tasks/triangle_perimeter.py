@@ -4,11 +4,11 @@ from numbers import Number
 
 import drawSvg as draw
 
-from who_cares.helpers import get_triangle_coordinates
-from who_cares.helpers.functions import get_random_letters, get_random_units
+from math_tasks_generator.helpers import get_triangle_coordinates
+from math_tasks_generator.helpers.functions import get_random_letters, get_random_units
 
 from ..base import MathTask, MathTaskGenerator
-from who_cares.primitives import Point, Line
+from math_tasks_generator.primitives import Point, Line
 
 
 @dataclass

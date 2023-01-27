@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "who-cares"
+name = "math-tasks-generator"
 version = "0.1.0"
 description = ""
 authors = ["Dominux <kir.gimranov@gmail.com>"]

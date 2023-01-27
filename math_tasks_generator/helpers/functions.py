@@ -5,8 +5,8 @@ import math
 from numbers import Number
 from typing import List, Tuple, Type
 
-from who_cares.base import MathTask
-from who_cares.types import Coords
+from math_tasks_generator.base import MathTask
+from math_tasks_generator.types import Coords
 
 
 def get_triangle_coordinates(
