@@ -22,4 +22,5 @@ def test_math_task(math_task: Type[MathTask], task_gen: Type[MathTaskGenerator])
             f.write(task.prompt)
 
         # Saving vector
-        task.vector.saveSvg(filepath.with_suffix(".svg"))
+        with filepath.with_suffix(".svg").open("w") as f:
+            f.write(task.vector)

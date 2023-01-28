@@ -2,17 +2,15 @@ import random
 from dataclasses import dataclass
 from numbers import Number
 
-import drawSvg as draw
-
-from math_tasks_generator.helpers import get_triangle_coordinates
-from math_tasks_generator.helpers.functions import get_random_letters, get_random_units
-
+from math_tasks_generator.helpers import get_random_letters, get_random_units
 from math_tasks_generator.base import MathTask, MathTaskGenerator
-from math_tasks_generator.primitives import Point, Line
 
 
 @dataclass
 class Task90Params:
+    point_1: str
+    point_2: str
+    point_3: str
     side_1: str
     side_2: str
     triangle: str
@@ -32,40 +30,19 @@ class Task90(MathTask[Task90Params]):
         Найдите периметр треугольника {triangle}.
     """
 
-    def __init__(self, params: Task90Params, *args, **kwargs) -> None:
-        super().__init__(*args, **kwargs)
-
-        self._params = params
-
-    @property
-    def vector(self) -> draw.Drawing:
-        d = draw.Drawing(100, 100, origin="center")
-
-        side_2_size = self._params.side_1_size * 2
-        side_3_size = side_2_size - self._params.side_3_side_2_diff
-
-        a, b, c = get_triangle_coordinates(
-            self._params.side_1_size, side_2_size, side_3_size
-        )
-
-        p1 = Point(a.x, a.y, 0.05, "red")
-        p2 = Point(b.x, b.y, 0.05, "red")
-        p3 = Point(c.x, c.y, 0.05, "red")
-
-        line_ab = Line(a.x, a.y, b.x, b.y, 0.025, "red")
-        line_bc = Line(b.x, b.y, c.x, c.y, 0.025, "red")
-        line_ca = Line(c.x, c.y, a.x, a.y, 0.025, "red")
-
-        points_names = list(self._params.triangle)
-
-        point_a = draw.Text(points_names[0], fontSize=1, x=a.x, y=a.y)
-        point_b = draw.Text(points_names[1], fontSize=1, x=b.x, y=b.y)
-        point_c = draw.Text(points_names[2], fontSize=1, x=c.x, y=c.y)
-
-        for el in (p1, p2, p3, line_ab, line_bc, line_ca, point_a, point_b, point_c):
-            d.append(el)
-
-        return d
+    _vector_template = """
+        <defs>
+        </defs>
+        <circle cx="0" cy="0" r="0.05" fill="red" />
+        <circle cx="7" cy="2" r="0.05" fill="red" />
+        <circle cx="-1" cy="-12" r="0.05" fill="red" />
+        <path d="M0,0 L7,2" stroke-width="0.025" stroke="red" />
+        <path d="M7,2 L-1,-12" stroke-width="0.025" stroke="red" />
+        <path d="M-1,-12 L0,0" stroke-width="0.025" stroke="red" />
+        <text x="0.1" y="-0.2" font-size="1" dy="0em">{point_1}</text>
+        <text x="7.1" y="2.1" font-size="1" dy="0em">{point_2}</text>
+        <text x="-1.3" y="-12.2" font-size="1" dy="0em">{point_3}</text>
+    """
 
 
 class Task90Generator(MathTaskGenerator[Task90Params]):
@@ -85,6 +62,9 @@ class Task90Generator(MathTaskGenerator[Task90Params]):
         units = get_random_units()
 
         return Task90Params(
+            point_1=points[0],
+            point_2=points[1],
+            point_3=points[2],
             side_1=side_1,
             side_2=side_2,
             side_3=side_3,
