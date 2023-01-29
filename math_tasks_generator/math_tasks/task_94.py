@@ -28,13 +28,33 @@ class Task94(MathTask[Task94Params]):
     _task_number = 94
 
     _prompt_template = """
-        На рисунке {picture_number} {side_1} = {side_2}, ∠1 = ∠2.
+        На рисунке {picture_number} {side_1} = {side_4}, ∠1 = ∠2.
         а) Докажите, что треугольники {triangle_1} и {triangle_2} равны;
         б) найдите {side_3} и {side_1}, если {side_2} = {side_2_size} {units}, {side_4} = {side_4_size} {units}
     """
 
     _vector_template = """
+        <defs></defs>
 
+        <path d="M0,0 L12,0" stroke-width="0.2" stroke="black" />
+        <path d="M0,0 L13,-5" stroke-width="0.2" stroke="black" />
+        <path d="M13,-5 L12,0" stroke-width="0.2" stroke="black" />
+        <path d="M0,0 L13,5" stroke-width="0.2" stroke="black" />
+        <path d="M13,5 L12,0" stroke-width="0.2" stroke="black" />
+
+        <text x="0" y="1.8" font-size="1.5" dy="0em">{point_1}</text>
+        <text x="13.3" y="-4" font-size="1.5" dy="0em">{point_2}</text>
+        <text x="13.3" y="5" font-size="1.5" dy="0em">{point_3}</text>
+        <text x="12.6" y="0.5" font-size="1.5" dy="0em">{point_4}</text>
+
+        <path d="M2,0 L1.7,-0.63" stroke-width="0.1" stroke="black" />
+        <path d="M2.3,0 L2.1,0.7" stroke-width="0.1" stroke="black" />
+
+        <text x="4" y="-0.4" font-size="1.2" dy="0em">1</text>
+        <text x="4" y="1.15" font-size="1.2" dy="0em">2</text>
+
+        <path d="M6.5,-2 L6,-2.8" stroke-width="0.1" stroke="black" />
+        <path d="M6.5,2 L6,2.8" stroke-width="0.1" stroke="black" />
     """
 
 
