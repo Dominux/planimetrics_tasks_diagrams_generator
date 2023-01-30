@@ -36,8 +36,9 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
         return self.minify_vector(svg)
 
     @staticmethod
-    def minify_vector(raw_vector: str) -> str:
-        return "".join([line.strip() for line in raw_vector.splitlines()])
+    def minify_vector(raw_vector: str, minify: bool = False) -> str:
+        delimiter = "" if minify else "\n"
+        return delimiter.join([line.strip() for line in raw_vector.splitlines()])
 
     @staticmethod
     def minify_text(raw_text: str) -> str:
