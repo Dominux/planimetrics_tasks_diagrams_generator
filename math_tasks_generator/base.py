@@ -38,7 +38,9 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
     @staticmethod
     def minify_vector(raw_vector: str, minify: bool = False) -> str:
         delimiter = "" if minify else "\n"
-        return delimiter.join([line.strip() for line in raw_vector.splitlines()])
+        vector = delimiter.join([line.strip() for line in raw_vector.splitlines()])
+
+        return vector[1:] if vector.startswith("\n") else vector
 
     @staticmethod
     def minify_text(raw_text: str) -> str:
