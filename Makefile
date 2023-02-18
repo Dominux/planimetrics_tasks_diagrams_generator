@@ -1,4 +1,4 @@
-test:
+test_dataset_generator:
 	cd dataset_generator && poetry run python -m unittest || true && cd -
 
 gen_dataset:
