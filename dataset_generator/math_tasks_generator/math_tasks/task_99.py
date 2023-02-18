@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator
+from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
 from math_tasks_generator.helpers import get_random_letters
 
 
@@ -66,3 +66,8 @@ class Task99Generator(MathTaskGenerator[Task99Params]):
             point_D=point_D,
             point_E=point_E,
         )
+
+
+class Task99Unit(MathTaskUnit):
+    _math_task = Task99
+    _math_task_generator = Task99Generator

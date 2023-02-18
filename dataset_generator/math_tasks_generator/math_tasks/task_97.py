@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator
+from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
 from math_tasks_generator.helpers import get_random_letters
 
 
@@ -80,3 +80,8 @@ class Task97Generator(MathTaskGenerator[Task97Params]):
             triangle_ABC=triangle_ABC,
             triangle_CDA=triangle_CDA,
         )
+
+
+class Task97Unit(MathTaskUnit):
+    _math_task = Task97
+    _math_task_generator = Task97Generator

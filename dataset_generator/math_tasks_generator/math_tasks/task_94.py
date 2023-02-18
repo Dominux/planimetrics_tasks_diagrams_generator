@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from numbers import Number
 import random
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator
+from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
 from math_tasks_generator.helpers import get_random_letters, get_random_units
 
 
@@ -19,8 +18,8 @@ class Task94Params:
     side_4: str
     triangle_1: str
     triangle_2: str
-    side_2_size: Number
-    side_4_size: Number
+    side_2_size: float
+    side_4_size: float
     units: str
 
 
@@ -94,3 +93,8 @@ class Task94Generator(MathTaskGenerator[Task94Params]):
             side_4_size=side_4_size,
             units=units,
         )
+
+
+class Task94Unit(MathTaskUnit):
+    _math_task = Task94
+    _math_task_generator = Task94Generator

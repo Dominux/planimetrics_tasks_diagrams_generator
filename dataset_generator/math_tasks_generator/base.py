@@ -1,6 +1,6 @@
 import abc
 from dataclasses import asdict
-from typing import Generic, TypeVar
+from typing import Generic, Type, TypeVar
 
 
 Params = TypeVar("Params")
@@ -55,3 +55,12 @@ class MathTaskGenerator(Generic[Params], metaclass=abc.ABCMeta):
     @abc.abstractstaticmethod
     def gen_params() -> Params:
         ...
+
+
+class MathTaskUnit(abc.ABC):
+    """
+    Base class to store math tasks in a single place
+    """
+
+    _math_task: Type[MathTask]
+    _math_task_generator: Type[MathTaskGenerator]

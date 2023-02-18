@@ -1,8 +1,7 @@
 from dataclasses import dataclass
-from numbers import Number
 import random
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator
+from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
 from math_tasks_generator.helpers import get_random_letters
 
 
@@ -18,8 +17,8 @@ class Task96Params:
     side_OB: str
     side_OC: str
     side_OD: str
-    angle_1_value: Number
-    angle_2_value: Number
+    angle_1_value: float
+    angle_2_value: float
     triangle_AOB: str
     triangle_DOC: str
     angle_ACD: str
@@ -110,3 +109,8 @@ class Task96Generator(MathTaskGenerator[Task96Params]):
             triangle_DOC=triangle_DOC,
             angle_ACD=angle_ACD,
         )
+
+
+class Task96Unit(MathTaskUnit):
+    _math_task = Task96
+    _math_task_generator = Task96Generator
