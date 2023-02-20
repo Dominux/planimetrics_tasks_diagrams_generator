@@ -1,2 +1,2 @@
-from .base import BaseTokenizer, RawVocabType
+from .base import BaseTokenizer, CorpusReprType
 from .base_trainer import BaseTrainer

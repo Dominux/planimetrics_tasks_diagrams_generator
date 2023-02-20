@@ -1,7 +1,7 @@
 import abc
 
 
-RawVocabType = dict[str, int]
+CorpusReprType = dict[str, int]
 
 
 class BaseTokenizer(abc.ABC):
@@ -9,7 +9,7 @@ class BaseTokenizer(abc.ABC):
     Base class for all tokenizers
     """
 
-    def __init__(self, vocab: RawVocabType) -> None:
+    def __init__(self, vocab: CorpusReprType) -> None:
         self._vocab = vocab
 
     @abc.abstractmethod

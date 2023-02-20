@@ -2,8 +2,9 @@ import os
 from pathlib import Path
 import re
 from collections import Counter, defaultdict
+from typing import Set
 
-from tokenizers.base import BaseTrainer, RawVocabType
+from tokenizers.base import BaseTrainer, CorpusReprType
 from tokenizers.bpe.bpe_tokenizer import BPETokenizer
 
 
@@ -12,26 +13,25 @@ class BPETrainer(BaseTrainer):
     Class to train a Byte-pair encoding tokenizer
 
     After train it returns a class to encode/decode text to/from vector via BPE
-
-    OOP enterprise adaptation of the script:
-    https://gist.github.com/akashjaswal/ba302b943dfb4e56ace0d5761d01b9cf#file-bpe-py
     """
 
     def train(self, iterations_amount: int = 50) -> BPETokenizer:
         corpus = self._read_corpus(self._corpus_filepath)
-        print("done reading corpus")
-
-        vocab = self.build_vocab(corpus)  # Step 1
+        corpus_repr = self._build_corpus_repr(corpus)
+        vocab = self._build_vocab(corpus)  # Step 1
 
         for _ in range(iterations_amount):
-            pairs = self.get_stats(vocab)  # Step 2
+            pairs = self.get_stats(corpus_repr)  # Step 2
 
             if not pairs:
                 break
 
             # step 3
             best = max(pairs, key=pairs.get)  # type: ignore
-            vocab = self.merge_vocab(best, vocab)
+            corpus_repr = self.update_corpus(best, corpus_repr)
+
+            # step 4
+            vocab = self.update_vocab(vocab, pairs=pairs.keys())  # type: ignore
 
         return BPETokenizer(vocab)
 
@@ -50,23 +50,21 @@ class BPETrainer(BaseTrainer):
         return corpus
 
     @staticmethod
-    def build_vocab(corpus: str) -> RawVocabType:
-        """Step 1. Build vocab from text corpus"""
-
-        # Separate each char in word by space and add mark end of token
-        tokens = [" ".join(word) + " </w>" for word in corpus.split()]
-
-        # Count frequency of tokens in corpus
-        vocab = Counter(tokens)
-
-        return vocab
+    def _build_vocab(corpus: str) -> Set[str]:
+        return set(corpus)
 
     @staticmethod
-    def get_stats(vocab: RawVocabType) -> RawVocabType:
-        """Step 2. Get counts of pairs of consecutive symbols"""
+    def _build_corpus_repr(corpus: str) -> CorpusReprType:
+        # Separate each char in word by space and add mark end of token
+        tokens = [" ".join(f"{word}_") for word in corpus.split()]
 
+        # Count frequency of tokens in corpus
+        return Counter(tokens)
+
+    @staticmethod
+    def get_stats(corpus_repr: CorpusReprType) -> CorpusReprType:
         pairs = defaultdict(int)
-        for word, frequency in vocab.items():
+        for word, frequency in corpus_repr.items():
             symbols = word.split()
 
             # Counting up occurrences of pairs
@@ -76,10 +74,9 @@ class BPETrainer(BaseTrainer):
         return pairs
 
     @staticmethod
-    def merge_vocab(pair: tuple, v_in: RawVocabType) -> RawVocabType:
-        """Step 3. Merge all occurrences of the most frequent pair"""
-
+    def update_corpus(pair: tuple, v_in: CorpusReprType) -> CorpusReprType:
         v_out = {}
+
         bigram = re.escape(" ".join(pair))
         p = re.compile(r"(?<!\S)" + bigram + r"(?!\S)")
 
@@ -89,3 +86,9 @@ class BPETrainer(BaseTrainer):
             v_out[w_out] = v_in[word]
 
         return v_out
+
+    @staticmethod
+    def update_vocab(vocab: set[str], pairs: list[tuple[str, str]]) -> set[str]:
+        united_pairs = ["".join(pair) for pair in pairs]
+
+        return vocab.union(united_pairs)
