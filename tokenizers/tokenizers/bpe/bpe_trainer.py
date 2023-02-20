@@ -1,7 +1,8 @@
 import re
 from collections import Counter, defaultdict
 
-from tokenizers.tokenizers.base.base_trainer import BaseTrainer
+from tokenizers.base import BaseTrainer, VocabType
+from tokenizers.bpe.bpe_tokenizer import BPETokenizer
 
 
 class BPETrainer(BaseTrainer):
@@ -14,8 +15,12 @@ class BPETrainer(BaseTrainer):
     https://gist.github.com/akashjaswal/ba302b943dfb4e56ace0d5761d01b9cf#file-bpe-py
     """
 
-    def train(self):
-        vocab = self.build_vocab(self._corpus)  # Step 1
+    def train(self) -> BPETokenizer:
+        # reading corpus file
+        with self._corpus_filepath.open() as f:
+            corpus = f.read()
+
+        vocab = self.build_vocab(corpus)  # Step 1
 
         num_merges = 50  # Hyperparameter
         for _ in range(num_merges):
@@ -28,10 +33,10 @@ class BPETrainer(BaseTrainer):
             best = max(pairs, key=pairs.get)  # type: ignore
             vocab = self.merge_vocab(best, vocab)
 
-        return vocab
+        return BPETokenizer(vocab)
 
     @staticmethod
-    def build_vocab(corpus: str) -> dict:
+    def build_vocab(corpus: str) -> VocabType:
         """Step 1. Build vocab from text corpus"""
 
         # Separate each char in word by space and add mark end of token
@@ -43,7 +48,7 @@ class BPETrainer(BaseTrainer):
         return vocab
 
     @staticmethod
-    def get_stats(vocab: dict) -> dict:
+    def get_stats(vocab: VocabType) -> VocabType:
         """Step 2. Get counts of pairs of consecutive symbols"""
 
         pairs = defaultdict(int)
@@ -57,7 +62,7 @@ class BPETrainer(BaseTrainer):
         return pairs
 
     @staticmethod
-    def merge_vocab(pair: tuple, v_in: dict) -> dict:
+    def merge_vocab(pair: tuple, v_in: VocabType) -> VocabType:
         """Step 3. Merge all occurrences of the most frequent pair"""
 
         v_out = {}

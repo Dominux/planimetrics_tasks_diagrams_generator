@@ -1,6 +1,7 @@
 import abc
+from pathlib import Path
 
-from tokenizers.tokenizers.base.base import BaseTokenizer
+from tokenizers.base.base import BaseTokenizer
 
 
 class BaseTrainer(abc.ABC):
@@ -8,12 +9,12 @@ class BaseTrainer(abc.ABC):
     Base class for all tokenizers trainers
     """
 
-    def __init__(self, corpus: str) -> None:
+    def __init__(self, corpus_filepath: Path) -> None:
         """
-        @param corpus - whole piece of text to train on
+        @param corpus_filepath - a filepath to the whole piece of text to train on
         """
 
-        self._corpus = corpus
+        self._corpus_filepath = corpus_filepath
 
     @abc.abstractmethod
     def train(self) -> BaseTokenizer:

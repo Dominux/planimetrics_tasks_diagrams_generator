@@ -1,12 +1,15 @@
 import abc
 
 
+VocabType = dict[str, int]
+
+
 class BaseTokenizer(abc.ABC):
     """
     Base class for all tokenizers
     """
 
-    def __init__(self, vocab) -> None:
+    def __init__(self, vocab: VocabType) -> None:
         self._vocab = vocab
 
     @abc.abstractmethod

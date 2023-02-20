@@ -1,2 +1,2 @@
-from .base import BaseTokenizer
+from .base import BaseTokenizer, VocabType
 from .base_trainer import BaseTrainer
