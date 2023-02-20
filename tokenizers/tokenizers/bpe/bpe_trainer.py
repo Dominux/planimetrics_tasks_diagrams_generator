@@ -51,12 +51,15 @@ class BPETrainer(BaseTrainer):
 
     @staticmethod
     def _build_vocab(corpus: str) -> Set[str]:
-        return set(corpus)
+        return set(corpus.replace(" ", BPETokenizer.whitespace_character))
 
     @staticmethod
     def _build_corpus_repr(corpus: str) -> CorpusReprType:
         # Separate each char in word by space and add mark end of token
-        tokens = [" ".join(f"{word}_") for word in corpus.split()]
+        tokens = [
+            " ".join(f"{word}{BPETokenizer.whitespace_character}")
+            for word in corpus.split()
+        ]
 
         # Count frequency of tokens in corpus
         return Counter(tokens)
