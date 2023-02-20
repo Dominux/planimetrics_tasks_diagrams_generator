@@ -1,13 +1,15 @@
+import os
+from pathlib import Path
 import re
 from collections import Counter, defaultdict
 
-from tokenizers.base import BaseTrainer, VocabType
+from tokenizers.base import BaseTrainer, RawVocabType
 from tokenizers.bpe.bpe_tokenizer import BPETokenizer
 
 
 class BPETrainer(BaseTrainer):
     """
-    Class to train a Byte-pair encoding
+    Class to train a Byte-pair encoding tokenizer
 
     After train it returns a class to encode/decode text to/from vector via BPE
 
@@ -15,15 +17,13 @@ class BPETrainer(BaseTrainer):
     https://gist.github.com/akashjaswal/ba302b943dfb4e56ace0d5761d01b9cf#file-bpe-py
     """
 
-    def train(self) -> BPETokenizer:
-        # reading corpus file
-        with self._corpus_filepath.open() as f:
-            corpus = f.read()
+    def train(self, iterations_amount: int = 50) -> BPETokenizer:
+        corpus = self._read_corpus(self._corpus_filepath)
+        print("done reading corpus")
 
         vocab = self.build_vocab(corpus)  # Step 1
 
-        num_merges = 50  # Hyperparameter
-        for _ in range(num_merges):
+        for _ in range(iterations_amount):
             pairs = self.get_stats(vocab)  # Step 2
 
             if not pairs:
@@ -36,7 +36,21 @@ class BPETrainer(BaseTrainer):
         return BPETokenizer(vocab)
 
     @staticmethod
-    def build_vocab(corpus: str) -> VocabType:
+    def _read_corpus(basepath: Path) -> str:
+        corpus = ""
+
+        # reading corpus files
+        for root, _, files in os.walk(basepath):
+            for filepath in files:
+                if filepath.endswith(".txt"):
+                    fullpath = Path(root) / filepath
+                    with open(fullpath) as f:
+                        corpus = f"{corpus}\n{f.read()}"
+
+        return corpus
+
+    @staticmethod
+    def build_vocab(corpus: str) -> RawVocabType:
         """Step 1. Build vocab from text corpus"""
 
         # Separate each char in word by space and add mark end of token
@@ -48,7 +62,7 @@ class BPETrainer(BaseTrainer):
         return vocab
 
     @staticmethod
-    def get_stats(vocab: VocabType) -> VocabType:
+    def get_stats(vocab: RawVocabType) -> RawVocabType:
         """Step 2. Get counts of pairs of consecutive symbols"""
 
         pairs = defaultdict(int)
@@ -62,7 +76,7 @@ class BPETrainer(BaseTrainer):
         return pairs
 
     @staticmethod
-    def merge_vocab(pair: tuple, v_in: VocabType) -> VocabType:
+    def merge_vocab(pair: tuple, v_in: RawVocabType) -> RawVocabType:
         """Step 3. Merge all occurrences of the most frequent pair"""
 
         v_out = {}
