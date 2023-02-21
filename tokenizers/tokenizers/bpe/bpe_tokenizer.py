@@ -13,9 +13,9 @@ class BPETokenizer(BaseTokenizer):
 
     whitespace_character = "_"
 
-    def __init__(self, vocab: set[str]) -> None:
+    def __init__(self, vocab: Iterable[str]) -> None:
         self._vocab = {token: i for i, token in enumerate(vocab)}
-        self._index2word = {i: token for token, i in self._vocab.items()}
+        self._index2word = {i: token for i, token in enumerate(vocab)}
 
     def encode(self, text: str) -> Iterable[int]:
         # preparing text
@@ -27,6 +27,7 @@ class BPETokenizer(BaseTokenizer):
         token = ""
         index = None
 
+        # iterating through symbols
         for symbol in text:
             token = f"{token}{symbol}"
 
@@ -34,19 +35,23 @@ class BPETokenizer(BaseTokenizer):
                 # there's no such a token
                 vector.append(index)
 
-                token = ""
-                index = None
+                token = symbol
+                index = self._vocab.get(token)
 
             else:
                 # indexing token
                 index = new_index
+
+        # saving renamed token
+        if token and index:
+            vector.append(index)
 
         return np.array(vector)
 
     def decode(self, vector: Iterable[int]) -> str:
         return "".join(
             [
-                self._index2word[index].replace(self.whitespace_character, "")
+                self._index2word[index].replace(self.whitespace_character, " ")
                 for index in vector
             ]
         )

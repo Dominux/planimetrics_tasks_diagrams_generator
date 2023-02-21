@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import re
 from collections import Counter, defaultdict
-from typing import Set
 
 from tokenizers.base import BaseTrainer, CorpusReprType
 from tokenizers.bpe.bpe_tokenizer import BPETokenizer
@@ -33,7 +32,7 @@ class BPETrainer(BaseTrainer):
             # step 4
             vocab = self.update_vocab(vocab, pairs=pairs.keys())  # type: ignore
 
-        return BPETokenizer(vocab)
+        return BPETokenizer(vocab.keys())
 
     @staticmethod
     def _read_corpus(basepath: Path) -> str:
@@ -50,8 +49,11 @@ class BPETrainer(BaseTrainer):
         return corpus
 
     @staticmethod
-    def _build_vocab(corpus: str) -> Set[str]:
-        return set(corpus.replace(" ", BPETokenizer.whitespace_character))
+    def _build_vocab(corpus: str) -> dict[str, None]:
+        return {
+            symbol: None
+            for symbol in iter(corpus.replace(" ", BPETokenizer.whitespace_character))
+        }
 
     @staticmethod
     def _build_corpus_repr(corpus: str) -> CorpusReprType:
@@ -91,7 +93,10 @@ class BPETrainer(BaseTrainer):
         return v_out
 
     @staticmethod
-    def update_vocab(vocab: set[str], pairs: list[tuple[str, str]]) -> set[str]:
-        united_pairs = ["".join(pair) for pair in pairs]
+    def update_vocab(
+        vocab: dict[str, None], pairs: list[tuple[str, str]]
+    ) -> dict[str, None]:
+        united_pairs = {"".join(pair): None for pair in pairs}
+        vocab.update(united_pairs)
 
-        return vocab.union(united_pairs)
+        return vocab
