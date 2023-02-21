@@ -9,9 +9,6 @@ class BaseTokenizer(abc.ABC):
     Base class for all tokenizers
     """
 
-    def __init__(self, vocab: CorpusReprType) -> None:
-        self._vocab = vocab
-
     @abc.abstractmethod
     def encode(self, text: str) -> str:
         """

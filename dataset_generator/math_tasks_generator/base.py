@@ -15,9 +15,10 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
     _prompt_template: str = ""
     _vector_template: str = ""
 
-    def __init__(self, params: Params, *args, **kwargs) -> None:
+    def __init__(self, params: Params, minify: bool = False, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self._params = params
+        self._minify = minify
 
     @property
     def prompt(self) -> str:
@@ -35,9 +36,8 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
         )
         return self.minify_vector(svg)
 
-    @staticmethod
-    def minify_vector(raw_vector: str, minify: bool = False) -> str:
-        delimiter = "" if minify else "\n"
+    def minify_vector(self, raw_vector: str) -> str:
+        delimiter = "" if self._minify else "\n"
         vector = delimiter.join([line.strip() for line in raw_vector.splitlines()])
 
         return vector[1:] if vector.startswith("\n") else vector

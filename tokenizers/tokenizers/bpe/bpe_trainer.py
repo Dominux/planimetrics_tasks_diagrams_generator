@@ -14,8 +14,12 @@ class BPETrainer(BaseTrainer):
     After train it returns a class to encode/decode text to/from vector via BPE
     """
 
-    def train(self, iterations_amount: int = 50) -> BPETokenizer:
-        corpus = self._read_corpus(self._corpus_filepath)
+    _class = BPETokenizer
+
+    def train(
+        self, iterations_amount: int = 50, file_ext: str = ".txt"
+    ) -> BPETokenizer:
+        corpus = self._read_corpus(self._corpus_filepath, file_ext).lower()
         corpus_repr = self._build_corpus_repr(corpus)
         vocab = self._build_vocab(corpus)  # Step 1
 
@@ -32,16 +36,16 @@ class BPETrainer(BaseTrainer):
             # step 4
             vocab = self.update_vocab(vocab, pairs=pairs.keys())  # type: ignore
 
-        return BPETokenizer(vocab.keys())
+        return self._class(vocab.keys())
 
     @staticmethod
-    def _read_corpus(basepath: Path) -> str:
+    def _read_corpus(basepath: Path, file_ext: str) -> str:
         corpus = ""
 
         # reading corpus files
         for root, _, files in os.walk(basepath):
             for filepath in files:
-                if filepath.endswith(".txt"):
+                if filepath.endswith(file_ext):
                     fullpath = Path(root) / filepath
                     with open(fullpath) as f:
                         corpus = f"{corpus}\n{f.read()}"

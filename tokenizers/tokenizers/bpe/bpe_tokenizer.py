@@ -19,7 +19,7 @@ class BPETokenizer(BaseTokenizer):
 
     def encode(self, text: str) -> Iterable[int]:
         # preparing text
-        text = text.replace(" ", self.whitespace_character)
+        text = text.replace(" ", self.whitespace_character).lower()
 
         vector = []
 

@@ -23,6 +23,7 @@ class MainGenerator:
                 task_gen=task_unit._math_task_generator,
                 amount=amount,
                 path=path,
+                minify=True,
             )
 
 

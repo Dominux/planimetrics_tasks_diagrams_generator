@@ -10,6 +10,7 @@ def run_math_task(
     task_gen: Type[MathTaskGenerator],
     amount: int = 10,
     path: Optional[Path] = None,
+    minify: bool = False,
 ):
     path = path or get_task_path(math_task)
 
@@ -21,7 +22,7 @@ def run_math_task(
 
         # Generating params and task
         params = task_gen.gen_params()
-        task = math_task(params)
+        task = math_task(params, minify)
 
         # Saving prompt
         with filepath.with_suffix(".txt").open("w") as f:
