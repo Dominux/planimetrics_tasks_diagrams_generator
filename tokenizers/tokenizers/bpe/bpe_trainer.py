@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 
 from tokenizers.base import BaseTrainer, CorpusReprType
 from tokenizers.bpe.bpe_tokenizer import BPETokenizer
+from tokenizers.constants import EOS_TOKEN, SOS_TOKEN
 
 
 class BPETrainer(BaseTrainer):
@@ -48,7 +49,11 @@ class BPETrainer(BaseTrainer):
                 if filepath.endswith(file_ext):
                     fullpath = Path(root) / filepath
                     with open(fullpath) as f:
-                        corpus = f"{corpus}\n{f.read()}"
+                        sentence = f.read()
+                        sentence = f"{SOS_TOKEN}{sentence}{EOS_TOKEN}"
+                        corpus = f"{corpus}\n{sentence}"
+
+        breakpoint()
 
         return corpus
 
@@ -62,10 +67,14 @@ class BPETrainer(BaseTrainer):
     @staticmethod
     def _build_corpus_repr(corpus: str) -> CorpusReprType:
         # Separate each char in word by space and add mark end of token
-        tokens = [
-            " ".join(f"{word}{BPETokenizer.whitespace_character}")
-            for word in corpus.split()
-        ]
+        tokens = [EOS_TOKEN, SOS_TOKEN]
+
+        tokens.extend(
+            (
+                " ".join(f"{word}{BPETokenizer.whitespace_character}")
+                for word in corpus.split()
+            )
+        )
 
         # Count frequency of tokens in corpus
         return Counter(tokens)

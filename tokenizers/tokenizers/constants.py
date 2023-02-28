@@ -1,0 +1,2 @@
+SOS_TOKEN = "<SOS>"
+EOS_TOKEN = "<EOS>"
