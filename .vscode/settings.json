@@ -1,4 +1,4 @@
 {
   "svg.preview.background": "custom",
-  "python.analysis.extraPaths": ["tokenizers"]
+  "python.analysis.extraPaths": ["planimetrics_tasks_generator"]
 }
