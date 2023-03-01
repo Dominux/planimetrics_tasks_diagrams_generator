@@ -1,8 +1,2 @@
-test_dataset_generator:
-	cd dataset_generator && poetry run python -m unittest || true && cd -
-
 gen_dataset:
-	cd dataset_generator && poetry run python math_tasks_generator/generator.py || true && cd -
-
-test_tokenization:
-	cd tokenizers && poetry run python -m unittest || true && cd -
+	cd planimetrics_tasks_generator/math_tasks_generator && poetry run python generator.py || true && cd -

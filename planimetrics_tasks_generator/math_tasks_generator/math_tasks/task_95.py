@@ -1,8 +1,15 @@
 from dataclasses import dataclass
 import random
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
-from math_tasks_generator.helpers import get_random_letters, get_random_units
+from math_tasks_generator.base import (
+    MathTask,
+    MathTaskGenerator,
+    MathTaskUnit,
+)
+from math_tasks_generator.helpers import (
+    get_random_letters,
+    get_random_units,
+)
 
 
 @dataclass

@@ -1,17 +1,21 @@
 [tool.poetry]
-name = "math-tasks-generator"
+name = "model"
 version = "0.1.0"
 description = ""
 authors = ["Dominux <kir.gimranov@gmail.com>"]
 readme = "README.md"
-packages = [{include = "math_tasks_generator"}]
+packages = [{include = "math_tasks_generator"}, {include = "tokenizers"}]
+
 
 [tool.poetry.dependencies]
 python = "^3.10"
+torch = "^1.13.1"
+torchvision = "^0.14.1"
+torchaudio = "^0.13.1"
 
 
 [tool.poetry.group.dev.dependencies]
-black = {version = "^23.1a1", allow-prereleases = true}
+black = "^23.1.0"
 
 [build-system]
 requires = ["poetry-core"]

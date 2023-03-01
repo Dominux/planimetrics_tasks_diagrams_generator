@@ -1,8 +1,13 @@
 from pathlib import Path
 from typing import Optional, Type
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator
-from math_tasks_generator.helpers.functions import get_task_path
+from math_tasks_generator.base import (
+    MathTask,
+    MathTaskGenerator,
+)
+from math_tasks_generator.helpers.functions import (
+    get_task_path,
+)
 
 
 def run_math_task(

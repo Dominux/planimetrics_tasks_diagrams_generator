@@ -1,6 +1,8 @@
 from pathlib import Path
 
-from math_tasks_generator.helpers.run_task import run_math_task
+from math_tasks_generator.helpers.run_task import (
+    run_math_task,
+)
 from math_tasks_generator.base import MathTaskUnit
 
 # Creating all tasks

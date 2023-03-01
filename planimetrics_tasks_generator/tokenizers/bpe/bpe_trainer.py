@@ -53,8 +53,6 @@ class BPETrainer(BaseTrainer):
                         sentence = f"{SOS_TOKEN}{sentence}{EOS_TOKEN}"
                         corpus = f"{corpus}\n{sentence}"
 
-        breakpoint()
-
         return corpus
 
     @staticmethod

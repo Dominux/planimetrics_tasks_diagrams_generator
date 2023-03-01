@@ -1,6 +1,10 @@
 from dataclasses import dataclass
 
-from math_tasks_generator.base import MathTask, MathTaskGenerator, MathTaskUnit
+from math_tasks_generator.base import (
+    MathTask,
+    MathTaskGenerator,
+    MathTaskUnit,
+)
 from math_tasks_generator.helpers import get_random_letters
 
 
