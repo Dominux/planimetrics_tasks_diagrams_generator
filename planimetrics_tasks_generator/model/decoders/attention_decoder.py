@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from model.constants import MAX_LENGTH
+from model.constants import DEVICE, MAX_LENGTH
 
 
 class AttnDecoderRNN(nn.Module):
@@ -41,4 +41,4 @@ class AttnDecoderRNN(nn.Module):
         return output, hidden, attn_weights
 
     def initHidden(self):
-        return torch.zeros(1, 1, self.hidden_size)
+        return torch.zeros(1, 1, self.hidden_size, device=DEVICE)

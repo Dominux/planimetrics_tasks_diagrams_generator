@@ -1,6 +1,8 @@
 import torch
 from torch import nn
 
+from model.constants import DEVICE
+
 
 class EncoderRNN(nn.Module):
     def __init__(self, input_size, hidden_size):
@@ -17,4 +19,4 @@ class EncoderRNN(nn.Module):
         return output, hidden
 
     def initHidden(self):
-        return torch.zeros(1, 1, self.hidden_size)
+        return torch.zeros(1, 1, self.hidden_size, device=DEVICE)

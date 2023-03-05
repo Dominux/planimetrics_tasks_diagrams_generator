@@ -17,7 +17,7 @@ class BPETokenizer(BaseTokenizer):
         self.index2word = {i: token for i, token in enumerate(vocab)}
 
         self.all_sentences = all_sentences
-        vocab_amount = len(vocab)  # type: ignore
+        self.vocab_amount = len(vocab)  # type: ignore
 
     def encode(self, text: str) -> list[int]:
         # preparing text

@@ -9,8 +9,6 @@ class BaseTrainer(abc.ABC):
     Base class for all tokenizers trainers
     """
 
-    all_sentences: list[str]
-
     def __init__(self, corpus_filepath: Path | str) -> None:
         """
         @param corpus_filepath - a filepath to the whole piece of text to train on
@@ -20,6 +18,7 @@ class BaseTrainer(abc.ABC):
             corpus_filepath = Path(corpus_filepath)
 
         self._corpus_filepath = corpus_filepath
+        self.all_sentences = []
 
     @abc.abstractmethod
     def train(self, iterations_amount: int = 50) -> BaseTokenizer:

@@ -37,7 +37,7 @@ class BPETrainer(BaseTrainer):
             # step 4
             vocab = self.update_vocab(vocab, pairs=pairs.keys())  # type: ignore
 
-        return self._class(vocab.keys())
+        return self._class(vocab.keys(), all_sentences=self.all_sentences)
 
     def _read_corpus(self, basepath: Path, file_ext: str) -> str:
         corpus = ""
