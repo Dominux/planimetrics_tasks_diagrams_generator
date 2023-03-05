@@ -81,7 +81,7 @@ def train(
 def as_minutes(s):
     m = math.floor(s / 60)
     s -= m * 60
-    return f"{m} {s}"
+    return "%dm %ds" % (m, s)
 
 
 def time_since(since, percent):
@@ -89,7 +89,7 @@ def time_since(since, percent):
     s = now - since
     es = s / (percent)
     rs = es - s
-    return f"{as_minutes(s)} (- {as_minutes(rs)})"
+    return "%s (- %s)" % (as_minutes(s), as_minutes(rs))
 
 
 def train_iters(

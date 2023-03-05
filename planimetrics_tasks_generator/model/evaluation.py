@@ -2,7 +2,7 @@ import random
 import torch
 
 from tokenizers.base import BaseTokenizer
-from tokenizers.constants import EOS_TOKEN, SOS_TOKEN
+from tokenizers.constants import EOS_INDEX, SOS_INDEX
 from model.constants import DEVICE, MAX_LENGTH
 from model.data_preparation import tensor_from_sentence
 
@@ -25,7 +25,7 @@ def evaluate(
             encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
             encoder_outputs[ei] += encoder_output[0, 0]
 
-        decoder_input = torch.tensor([[SOS_TOKEN]], device=DEVICE)  # SOS
+        decoder_input = torch.tensor([[SOS_INDEX]], device=DEVICE)  # SOS
 
         decoder_hidden = encoder_hidden
 
@@ -38,7 +38,7 @@ def evaluate(
             )
             decoder_attentions[di] = decoder_attention.data
             _topv, topi = decoder_output.data.topk(1)
-            if topi.item() == EOS_TOKEN:
+            if topi.item() == EOS_INDEX:
                 decoded_words.append("<EOS>")
                 break
             else:

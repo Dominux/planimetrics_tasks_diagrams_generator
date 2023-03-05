@@ -59,8 +59,8 @@ def main():
         pairs,
         encoder1,
         attn_decoder1,
-        75000,
-        print_every=5000,
+        5000,
+        print_every=500,
     )
 
     # Evaluating
