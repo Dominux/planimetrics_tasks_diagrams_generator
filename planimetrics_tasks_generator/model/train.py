@@ -7,6 +7,7 @@ from torch import optim
 from torch import nn
 
 from tokenizers.constants import SOS_TOKEN, EOS_TOKEN
+from tokenizers.base import BaseTokenizer
 from model.constants import DEVICE, MAX_LENGTH
 from model.visualisation import show_plot
 from model.data_preparation import tensors_from_pair
@@ -92,7 +93,8 @@ def time_since(since, percent):
 
 
 def train_iters(
-    tokenizers,
+    tokenizers: tuple[BaseTokenizer, BaseTokenizer],
+    pairs: list[tuple[str, str]],
     encoder,
     decoder,
     n_iters,

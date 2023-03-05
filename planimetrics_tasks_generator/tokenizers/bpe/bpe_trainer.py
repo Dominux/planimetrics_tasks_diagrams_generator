@@ -39,8 +39,7 @@ class BPETrainer(BaseTrainer):
 
         return self._class(vocab.keys())
 
-    @staticmethod
-    def _read_corpus(basepath: Path, file_ext: str) -> str:
+    def _read_corpus(self, basepath: Path, file_ext: str) -> str:
         corpus = ""
 
         # reading corpus files
@@ -50,6 +49,8 @@ class BPETrainer(BaseTrainer):
                     fullpath = Path(root) / filepath
                     with open(fullpath) as f:
                         sentence = f.read()
+                        self.all_sentences.append(sentence)
+
                         sentence = f"{SOS_TOKEN}{sentence}{EOS_TOKEN}"
                         corpus = f"{corpus}\n{sentence}"
 

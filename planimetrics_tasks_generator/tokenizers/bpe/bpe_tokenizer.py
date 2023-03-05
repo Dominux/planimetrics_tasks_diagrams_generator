@@ -1,5 +1,6 @@
 from __future__ import annotations
-from typing import Iterable, Sized
+
+from typing import Iterable
 
 from tokenizers.base import BaseTokenizer
 
@@ -11,11 +12,12 @@ class BPETokenizer(BaseTokenizer):
 
     whitespace_character = "_"
 
-    def __init__(self, vocab: Iterable[str] & Sized) -> None:
+    def __init__(self, vocab: Iterable[str], all_sentences: list[str]) -> None:
         self.word2index = {token: i for i, token in enumerate(vocab)}
         self.index2word = {i: token for i, token in enumerate(vocab)}
 
-        vocab_amount = len(vocab)
+        self.all_sentences = all_sentences
+        vocab_amount = len(vocab)  # type: ignore
 
     def encode(self, text: str) -> list[int]:
         # preparing text

@@ -16,7 +16,7 @@ class MainGenerator:
     path = Path("dataset")
 
     @classmethod
-    def generate(cls, amount: int):
+    def generate(cls, amount: int = AMOUNT):
         for task_unit in MathTaskUnit.__subclasses__():
             path = cls.path / str(task_unit._math_task._task_number)
 

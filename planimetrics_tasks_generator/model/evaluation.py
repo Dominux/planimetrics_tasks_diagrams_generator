@@ -43,7 +43,6 @@ def evaluate(
                 break
             else:
                 decoded_words.append(tokenizers[1].decode(topi.item()))
-                # decoded_words.append(output_lang.index2word[topi.item()])
 
             decoder_input = topi.squeeze().detach()
 
@@ -51,7 +50,11 @@ def evaluate(
 
 
 def evaluate_randomly(
-    encoder, decoder, tokenizers: tuple[BaseTokenizer, BaseTokenizer], n=10
+    encoder,
+    decoder,
+    tokenizers: tuple[BaseTokenizer, BaseTokenizer],
+    pairs: list[tuple[str, str]],
+    n=10,
 ):
     for i in range(n):
         pair = random.choice(pairs)

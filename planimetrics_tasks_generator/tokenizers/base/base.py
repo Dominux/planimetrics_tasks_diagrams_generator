@@ -10,6 +10,7 @@ class BaseTokenizer(abc.ABC):
     """
 
     vocab_amount: int
+    all_sentences: list[str]
 
     @abc.abstractmethod
     def encode(self, text: str) -> list[int]:
