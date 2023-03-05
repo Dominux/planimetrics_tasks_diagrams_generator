@@ -64,7 +64,10 @@ def main():
     )
 
     # Evaluating
-    evaluate_randomly(encoder1, attn_decoder1, tokenizers=tokenizers, pairs=pairs)
+    try:
+        evaluate_randomly(encoder1, attn_decoder1, tokenizers=tokenizers, pairs=pairs)
+    except:
+        ...
 
 
 if __name__ == "__main__":
