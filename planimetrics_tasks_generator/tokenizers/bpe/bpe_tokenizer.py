@@ -4,7 +4,7 @@ from typing import Iterable
 
 from tokenizers.base import BaseTokenizer
 from tokenizers.helpers import swap_2_elements_in_list
-from tokenizers.constants import SOS_TOKEN, EOS_TOKEN
+from tokenizers.constants import EOS_INDEX, SOS_INDEX, SOS_TOKEN, EOS_TOKEN
 
 
 class BPETokenizer(BaseTokenizer):
@@ -17,8 +17,8 @@ class BPETokenizer(BaseTokenizer):
     def __init__(self, vocab: Iterable[str], all_sentences: list[str]) -> None:
         # Changing vocab a bit
         vocab = list(vocab)
-        swap_2_elements_in_list(vocab, SOS_TOKEN, 0)
-        swap_2_elements_in_list(vocab, EOS_TOKEN, 1)
+        swap_2_elements_in_list(vocab, SOS_TOKEN, SOS_INDEX)
+        swap_2_elements_in_list(vocab, EOS_TOKEN, EOS_INDEX)
 
         self.word2index = {token: i for i, token in enumerate(vocab)}
         self.index2word = {i: token for i, token in enumerate(vocab)}

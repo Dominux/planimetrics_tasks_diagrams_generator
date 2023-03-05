@@ -1,2 +1,5 @@
 SOS_TOKEN = "📈"
 EOS_TOKEN = "📉"
+
+SOS_INDEX = 0
+EOS_INDEX = 1

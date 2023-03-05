@@ -6,7 +6,7 @@ import torch
 from torch import optim
 from torch import nn
 
-from tokenizers.constants import SOS_TOKEN, EOS_TOKEN
+from tokenizers.constants import EOS_INDEX, SOS_INDEX
 from tokenizers.base import BaseTokenizer
 from model.constants import DEVICE, MAX_LENGTH
 from model.visualisation import show_plot
@@ -42,7 +42,7 @@ def train(
         encoder_output, encoder_hidden = encoder(input_tensor[ei], encoder_hidden)
         encoder_outputs[ei] = encoder_output[0, 0]
 
-    decoder_input = torch.tensor([[SOS_TOKEN]], device=DEVICE)
+    decoder_input = torch.tensor([[SOS_INDEX]], device=DEVICE)
 
     decoder_hidden = encoder_hidden
 
@@ -67,7 +67,7 @@ def train(
             decoder_input = topi.squeeze().detach()  # detach from history as input
 
             loss += criterion(decoder_output, target_tensor[di])
-            if decoder_input.item() == EOS_TOKEN:
+            if decoder_input.item() == EOS_INDEX:
                 break
 
     loss.backward()
