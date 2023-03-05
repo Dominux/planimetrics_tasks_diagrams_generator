@@ -1,2 +1,2 @@
-SOS_TOKEN = "<SOS>"
-EOS_TOKEN = "<EOS>"
+SOS_TOKEN = "📈"
+EOS_TOKEN = "📉"

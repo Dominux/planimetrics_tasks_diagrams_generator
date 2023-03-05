@@ -7,6 +7,7 @@ from model.evaluation import evaluate_randomly
 from tokenizers.base import BaseTokenizer
 from tokenizers.bpe import BPETrainer
 from math_tasks_generator import generator as dataset_generator
+from tokenizers.constants import SOS_TOKEN, EOS_TOKEN
 
 
 def generate_dataset() -> Path:
@@ -27,6 +28,10 @@ def create_tokenizers(
         (input_tokenizer.all_sentences[i], output_tokenizer.all_sentences[i])
         for i in range(len(input_tokenizer.all_sentences))
     ]
+
+    # Asserting a bit
+    assert input_tokenizer.encode(SOS_TOKEN) == output_tokenizer.encode(SOS_TOKEN)
+    assert input_tokenizer.encode(EOS_TOKEN) == output_tokenizer.encode(EOS_TOKEN)
 
     return (input_tokenizer, output_tokenizer, pairs)
 
