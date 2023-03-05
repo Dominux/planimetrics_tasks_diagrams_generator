@@ -9,14 +9,16 @@ class BaseTokenizer(abc.ABC):
     Base class for all tokenizers
     """
 
+    vocab_amount: int
+
     @abc.abstractmethod
-    def encode(self, text: str) -> str:
+    def encode(self, text: str) -> list[int]:
         """
         text -> vector
         """
 
     @abc.abstractmethod
-    def decode(self, vector: str) -> str:
+    def decode(self, vector: list[int]) -> str:
         """
         vector -> text
         """

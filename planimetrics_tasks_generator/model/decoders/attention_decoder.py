@@ -2,9 +2,11 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
+from model.constants import MAX_LENGTH
+
 
 class AttnDecoderRNN(nn.Module):
-    def __init__(self, hidden_size, output_size, dropout_p=0.1, max_length=256):
+    def __init__(self, hidden_size, output_size, dropout_p=0.1, max_length=MAX_LENGTH):
         super().__init__()
         self.hidden_size = hidden_size
         self.output_size = output_size
