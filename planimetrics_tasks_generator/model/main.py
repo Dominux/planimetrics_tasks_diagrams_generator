@@ -59,15 +59,12 @@ def main():
         pairs,
         encoder1,
         attn_decoder1,
-        5000,
+        100,
         print_every=500,
     )
 
     # Evaluating
-    try:
-        evaluate_randomly(encoder1, attn_decoder1, tokenizers=tokenizers, pairs=pairs)
-    except:
-        ...
+    evaluate_randomly(encoder1, attn_decoder1, tokenizers=tokenizers, pairs=pairs)
 
 
 if __name__ == "__main__":

@@ -42,7 +42,8 @@ def evaluate(
                 decoded_words.append("<EOS>")
                 break
             else:
-                decoded_words.append(tokenizers[1].decode(topi.item()))
+                token = tokenizers[1].decode_index(topi.item())
+                decoded_words.append(token)
 
             decoder_input = topi.squeeze().detach()
 

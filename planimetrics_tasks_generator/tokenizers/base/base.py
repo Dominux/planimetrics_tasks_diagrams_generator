@@ -18,8 +18,14 @@ class BaseTokenizer(abc.ABC):
         text -> vector
         """
 
-    @abc.abstractmethod
     def decode(self, vector: list[int]) -> str:
         """
         vector -> text
+        """
+        return "".join(self.decode_index(i) for i in vector)
+
+    @abc.abstractmethod
+    def decode_index(self, index: int) -> str:
+        """
+        index -> text
         """

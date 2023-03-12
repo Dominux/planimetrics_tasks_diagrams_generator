@@ -57,10 +57,5 @@ class BPETokenizer(BaseTokenizer):
 
         return vector
 
-    def decode(self, vector: Iterable[int]) -> str:
-        return "".join(
-            [
-                self.index2word[index].replace(self.whitespace_character, " ")
-                for index in vector
-            ]
-        )
+    def decode_index(self, index: int) -> str:
+        return self.index2word[index].replace(self.whitespace_character, " ")
