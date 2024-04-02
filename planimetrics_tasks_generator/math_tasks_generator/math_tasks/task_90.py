@@ -36,15 +36,7 @@ class Task90(MathTask[Task90Params]):
         Найдите периметр треугольника {triangle}.
     """
 
-    _vector_template = """
-        <defs></defs>
-        <path d="M0,0 L7,2" stroke-width="0.2" stroke="black" />
-        <path d="M7,2 L-1,-12" stroke-width="0.2" stroke="black" />
-        <path d="M-1,-12 L0,0" stroke-width="0.2" stroke="black" />
-        <text x="0.1" y="-0.2" font-size="1.5" dy="0em">{point_1}</text>
-        <text x="7.1" y="2.1" font-size="1.5" dy="0em">{point_2}</text>
-        <text x="-1.3" y="-12.2" font-size="1.5" dy="0em">{point_3}</text>
-    """
+    _triangle_params_key = "triangle"
 
 
 class Task90Generator(MathTaskGenerator[Task90Params]):
