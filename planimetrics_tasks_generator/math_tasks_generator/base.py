@@ -26,7 +26,7 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
         return self.minify_text(prompt)
 
     @property
-    def vector(self) -> str:
+    def figure(self) -> str:
         return getattr(self._params, self._triangle_params_key)
 
     @staticmethod

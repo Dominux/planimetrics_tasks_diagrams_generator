@@ -34,5 +34,5 @@ def run_math_task(
             f.write(task.prompt)
 
         # Saving vector
-        with filepath.with_suffix(".vector.txt").open("w") as f:
-            f.write(task.vector)
+        with filepath.with_suffix(".figure.txt").open("w") as f:
+            f.write(task.figure)
