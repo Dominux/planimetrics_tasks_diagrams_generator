@@ -9,7 +9,7 @@ from math_tasks_generator.base import MathTaskUnit
 import math_tasks_generator.math_tasks
 
 
-AMOUNT = 20
+AMOUNT = 1000
 
 
 class MainGenerator:

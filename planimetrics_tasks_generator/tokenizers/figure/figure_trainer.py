@@ -6,7 +6,7 @@ from tokenizers.figure import FigureTokenizer
 
 
 class FigureTrainer(BaseTrainer):
-    def train(self, _iterations_amount: int = 50, file_ext: str = ".figure.txt") -> FigureTokenizer:
+    def train(self, file_ext: str = ".figure") -> FigureTokenizer:
         for root, _, files in os.walk(self._corpus_filepath):
             for filepath in files:
                 if filepath.endswith(file_ext):

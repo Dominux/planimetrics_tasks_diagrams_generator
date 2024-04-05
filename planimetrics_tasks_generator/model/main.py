@@ -8,6 +8,7 @@ from tokenizers.base import BaseTokenizer
 from tokenizers.bpe import BPETrainer
 from math_tasks_generator import generator as dataset_generator
 from tokenizers.constants import SOS_TOKEN, EOS_TOKEN
+from tokenizers.figure.figure_trainer import FigureTrainer
 
 
 def generate_dataset() -> Path:
@@ -22,7 +23,7 @@ def create_tokenizers(
     returns input tokenizer, output tokenizer and a list of pairs
     """
     input_tokenizer = BPETrainer(path).train(iter_amount)
-    output_tokenizer = BPETrainer(path).train(iter_amount, file_ext=".svg")
+    output_tokenizer = FigureTrainer(path).train()
 
     pairs = [
         (input_tokenizer.all_sentences[i], output_tokenizer.all_sentences[i])
