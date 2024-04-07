@@ -49,8 +49,8 @@ def main():
     tokenizers = (input_tokenizer, output_tokenizer)
 
     hidden_size = 256
-    encoder1 = EncoderRNN(input_tokenizer.vocab_amount, hidden_size).to(DEVICE)
-    attn_decoder1 = AttnDecoderRNN(
+    encoder = EncoderRNN(input_tokenizer.vocab_amount, hidden_size).to(DEVICE)
+    attn_decoder = AttnDecoderRNN(
         hidden_size, output_tokenizer.vocab_amount, dropout_p=0.1
     ).to(DEVICE)
 
@@ -58,14 +58,14 @@ def main():
     train_iters(
         tokenizers,
         pairs,
-        encoder1,
-        attn_decoder1,
+        encoder,
+        attn_decoder,
         100,
         print_every=500,
     )
 
     # Evaluating
-    evaluate_randomly(encoder1, attn_decoder1, tokenizers=tokenizers, pairs=pairs)
+    evaluate_randomly(encoder, attn_decoder, tokenizers=tokenizers, pairs=pairs)
 
 
 if __name__ == "__main__":

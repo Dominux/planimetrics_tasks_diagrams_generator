@@ -13,7 +13,8 @@ from model.visualisation import show_plot
 from model.data_preparation import tensors_from_pair
 
 
-teacher_forcing_ratio = 0.5
+teacher_forcing_ratio = 0
+# teacher_forcing_ratio = 0.5
 
 
 def train(
