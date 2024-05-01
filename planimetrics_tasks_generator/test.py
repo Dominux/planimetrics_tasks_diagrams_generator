@@ -12,8 +12,25 @@ from data_loader import DataLoader as TasksDataLoader
 # https://www.youtube.com/watch?v=9sHcLvVXsns
 
 
+PAD_TOKEN = "<PAD>"
+UNKNOWN_TOKEN = "<UNK>"
 START_TOKEN = "<SOS>"
 END_TOKEN = "<EOS>"
+
+
+class Vocabulary:
+    def __init__(self, freq_treshold) -> None:
+        default_tokens = (PAD_TOKEN, START_TOKEN, END_TOKEN, UNKNOWN_TOKEN)
+        self.itos = {i: token for i, token in enumerate(default_tokens)}
+        self.stoi = {token: i for i, token in enumerate(default_tokens)}
+        self.freq_treshold = freq_treshold
+
+    def __len__(self):
+        return len(self.itos)
+
+    @staticmethod
+    def tokenizer_eng(text):
+        ...        
 
 
 class TasksDataset(Dataset):
