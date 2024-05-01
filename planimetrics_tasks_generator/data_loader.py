@@ -10,6 +10,9 @@ class DataLoader:
     def __init__(self, corpus_filepath: Path | str) -> None:
         self._pairs = self._load(corpus_filepath)
 
+    def __len__(self):
+        return len(self._pairs)
+
     def __iter__(self):
         return iter(self._pairs)
 

@@ -1,53 +1,40 @@
 from pathlib import Path
-from typing import Iterable, List
 
-from torchtext.data.utils import get_tokenizer
-from torchtext.vocab import build_vocab_from_iterator
+# import pandas as pd
+import spacy
+import torch
+from torch.nn.utils.rnn import pad_sequence
+from torch.utils.data import DataLoader, Dataset
 
-from math_tasks_generator import generator as dataset_generator
-from data_loader import DataLoader
-
-
-# https://pytorch.org/tutorials/beginner/translation_transformer.html
+from data_loader import DataLoader as TasksDataLoader
 
 
-SRC_LANGUAGE = 'de'
-TGT_LANGUAGE = 'en'
-LANGUAGE_INDEX = {SRC_LANGUAGE: 0, TGT_LANGUAGE: 1}
-
-# Define special symbols and indices
-UNK_IDX, PAD_IDX, BOS_IDX, EOS_IDX = 0, 1, 2, 3
-# Make sure the tokens are in order of their indices to properly insert them in vocab
-special_symbols = ['<unk>', '<pad>', '<bos>', '<eos>']
-
-def generate_dataset() -> Path:
-    dataset_generator.MainGenerator().generate()
-    return dataset_generator.MainGenerator.path
-
-# helper function to yield list of tokens
-def yield_tokens(data_iter: Iterable[tuple[str, str]], language: str):
-    for data_sample in data_iter:
-        yield data_sample[LANGUAGE_INDEX[language]]
-
-def main():
-    dataset_path = generate_dataset()
-    data_loader = DataLoader(dataset_path)
-    vocab_transform = {}
-
-    for ln in (SRC_LANGUAGE, TGT_LANGUAGE):
-        # Create torchtext's Vocab object
-        vocab_transform[ln] = build_vocab_from_iterator(
-            yield_tokens(data_loader, ln),
-            min_freq=1,
-            specials=special_symbols,
-            special_first=True
-        )
-
-    # Set ``UNK_IDX`` as the default index. This index is returned when the token is not found.
-    # If not set, it throws ``RuntimeError`` when the queried token is not found in the Vocabulary.
-    for ln in (SRC_LANGUAGE, TGT_LANGUAGE):
-        vocab_transform[ln].set_default_index(UNK_IDX)
+# https://www.youtube.com/watch?v=9sHcLvVXsns
 
 
-if __name__ == "__main__":
-    main()
+START_TOKEN = "<SOS>"
+END_TOKEN = "<EOS>"
+
+
+class TasksDataset(Dataset):
+    def __init__(self, root_dir: str, corpus_filepath: Path | str, freq_treshold=5) -> None:
+        self.root_dir = root_dir
+        self._data = TasksDataLoader(corpus_filepath)
+        self.vocab = Vocabulary(freq_treshold)
+        # self.vocab.build_vocabulary(self.)
+
+    def __len__(self):
+        return len(self._data)
+
+    def __getitem__(self, index):
+        pair = self._data._pairs[index]
+        return (self._to_tensor(pair[0]), self._to_tensor(pair[1]))
+
+    def _to_tensor(self, text: str):
+        numericalized = [
+            self.vocab.stoi[START_TOKEN],
+            *self.vocab.numericalize(),
+            self.vocab.stoi[START_TOKEN]
+        ]
+        return torch.tensor(numericalized)
+
