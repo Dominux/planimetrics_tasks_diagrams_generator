@@ -191,7 +191,7 @@ def evaluate(model):
 
 
 from timeit import default_timer as timer
-NUM_EPOCHS = 18
+NUM_EPOCHS = 8
 
 for epoch in range(1, NUM_EPOCHS+1):
     start_time = timer()
@@ -233,11 +233,10 @@ def translate(model: torch.nn.Module, src_sentence: str):
     src_mask = torch.zeros(num_tokens, num_tokens).type(torch.bool)
     tgt_tokens = greedy_decode(
         model,  src, src_mask, max_len=num_tokens + 5, start_symbol=START_IDX).flatten()
-    breakpoint()
-    print()
-    # return " ".join(
-    #     vocab_transform[TGT_LANGUAGE].lookup_tokens(
-    #         list(tgt_tokens.cpu().numpy())
-    #     )).replace(START_TOKEN, "").replace(END_TOKEN, "")
+    return train_dataloader.dataset.from_indeces(tgt_tokens.cpu().numpy())
 
-translate(transformer, val_dataloader.dataset._data._pairs[0][0])
+
+input = train_dataloader.dataset._data._pairs[0][0]
+
+output = translate(transformer, input)
+print(f"{input=}, {output=}")

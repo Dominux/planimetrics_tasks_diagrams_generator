@@ -60,6 +60,12 @@ class Vocabulary:
             for token in tokenized_text
         ]
 
+    def textify(self, indeces: "Iterable[int]"):
+        return "".join(
+            self.itos[index] if index in self.itos else UNKNOWN_TOKEN
+            for index in indeces
+        )
+
 
 class TasksDataset(Dataset):
     def __init__(self, root_dir: "str", corpus_filepath: "Path | str", freq_treshold=5) -> None:
@@ -82,6 +88,9 @@ class TasksDataset(Dataset):
             self.vocab.stoi[START_TOKEN]
         ]
         return torch.tensor(numericalized)
+    
+    def from_indeces(self, indeces: "Iterable[int]") -> str:
+        return self.vocab.textify(indeces).replace(START_TOKEN, "").replace(END_TOKEN, "")
 
 
 class TasksCollate:
