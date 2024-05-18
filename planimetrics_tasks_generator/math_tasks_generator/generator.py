@@ -30,4 +30,10 @@ class MainGenerator:
 
 
 if __name__ == "__main__":
+    # generating train dataset
+    MainGenerator.path = Path("../train_dataset")
+    MainGenerator.generate(AMOUNT)
+    
+    # generating validation dataset
+    MainGenerator.path = Path("../validation_dataset")
     MainGenerator.generate(AMOUNT)
