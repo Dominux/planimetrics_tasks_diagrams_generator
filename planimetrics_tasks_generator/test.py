@@ -1,96 +1,54 @@
-from collections import defaultdict
+import copy
 from pathlib import Path
 from typing import TYPE_CHECKING
+
+from settings import BATCH_SIZE
+from tokenizers.bpe.bpe_trainer import BPETrainer
+from tokenizers.constants import END_TOKEN, PAD_IDX, START_TOKEN
 if TYPE_CHECKING:
-    from typing import Iterable, Any
+    from typing import Any
 
 # import pandas as pd
-import spacy
-import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
-
-from data_loader import DataLoader as TasksDataLoader
 
 
 # https://www.youtube.com/watch?v=9sHcLvVXsns
 
 
-PAD_TOKEN = "<PAD>"
-UNKNOWN_TOKEN = "<UNK>"
-START_TOKEN = "<SOS>"
-END_TOKEN = "<EOS>"
-
-
-spacy_eng = spacy.load("en_core_web_sm")
-
-
-class Vocabulary:
-    def __init__(self, freq_treshold: "int") -> None:
-        default_tokens = (PAD_TOKEN, START_TOKEN, END_TOKEN, UNKNOWN_TOKEN)
-        self.itos = {i: token for i, token in enumerate(default_tokens)}
-        self.stoi = {token: i for i, token in enumerate(default_tokens)}
-        self.freq_treshold = freq_treshold
-
-    def __len__(self):
-        return len(self.itos)
-
-    @staticmethod
-    def tokenizer_eng(text):
-        return [tok.text.lower() for tok in spacy_eng.tokenizer(text)]
-    
-    def build_vocabulary(self, sentence_list: "Iterable[str]"):
-        frequencies = defaultdict(int)
-        idx = len(self.itos)
-
-        for sentence in sentence_list:
-            for word in self.tokenizer_eng(sentence):
-                frequencies[word] += 1
-            
-                if frequencies[word] == self.freq_treshold:
-                    self.stoi[word] = idx
-                    self.itos[idx] = word
-                    idx += 1
-
-    def numericalize(self, text: "str"):
-        tokenized_text = self.tokenizer_eng(text)
-
-        return [
-            self.stoi[token] if token in self.stoi else self.stoi[UNKNOWN_TOKEN]
-            for token in tokenized_text
-        ]
-
-    def textify(self, indeces: "Iterable[int]"):
-        return "".join(
-            self.itos[index] if index in self.itos else UNKNOWN_TOKEN
-            for index in indeces
-        )
-
-
 class TasksDataset(Dataset):
-    def __init__(self, root_dir: "str", corpus_filepath: "Path | str", freq_treshold=5) -> None:
-        self.root_dir = root_dir
-        self._data = TasksDataLoader(corpus_filepath)
-        self.vocab = Vocabulary(freq_treshold)
-        self.vocab.build_vocabulary([pair[0] for pair in self._data])
+    def __init__(self, corpus_filepath: "Path | str", freq_treshold=1) -> None:
+        self.src_tokenizer = BPETrainer(corpus_filepath).train()
+        self.tgt_tokenizer = BPETrainer(corpus_filepath).train(file_ext=".figure")
 
     def __len__(self):
-        return len(self._data)
+        return len(self.src_tokenizer.all_sentences)
 
     def __getitem__(self, index: "int"):
-        pair = self._data._pairs[index]
-        return (self._to_tensor(pair[0]), self._to_tensor(pair[1]))
+        src = self.src_tokenizer.all_sentences[index]
+        tgt = self.tgt_tokenizer.all_sentences[index]
 
-    def _to_tensor(self, text: "str"):
-        numericalized = [
-            self.vocab.stoi[START_TOKEN],
-            *self.vocab.numericalize(text),
-            self.vocab.stoi[START_TOKEN]
-        ]
-        return torch.tensor(numericalized)
+        return (self.src_tokenizer.encode(src), self.tgt_tokenizer.encode(tgt))
     
-    def from_indeces(self, indeces: "Iterable[int]") -> str:
-        return self.vocab.textify(indeces).replace(START_TOKEN, "").replace(END_TOKEN, "")
+    def from_indeces(self, indeces: "list[int]") -> str:
+        return self.tgt_tokenizer.decode(indeces).replace(START_TOKEN, "").replace(END_TOKEN, "")
+    
+    def divide(self, fraction: "float") -> "tuple[TasksDataset, TasksDataset]":
+        new_dataset = copy.deepcopy(self)
+
+        new_dataset.src_tokenizer.index2word = self.src_tokenizer.index2word
+        new_dataset.src_tokenizer.word2index = self.src_tokenizer.word2index
+        new_dataset.tgt_tokenizer.index2word = self.tgt_tokenizer.index2word
+        new_dataset.tgt_tokenizer.word2index = self.tgt_tokenizer.word2index
+
+        point = round(len(self) * fraction)
+
+        new_dataset.src_tokenizer.all_sentences = self.src_tokenizer.all_sentences[:point]
+        self.src_tokenizer.all_sentences = self.src_tokenizer.all_sentences[point:]
+        new_dataset.tgt_tokenizer.all_sentences = self.tgt_tokenizer.all_sentences[:point]
+        self.tgt_tokenizer.all_sentences = self.tgt_tokenizer.all_sentences[point:]
+        
+        return (self, new_dataset)
 
 
 class TasksCollate:
@@ -107,16 +65,13 @@ class TasksCollate:
 
 
 def get_loader(
-    root_dir: "str",
-    corpus_filepath: "Path | str",
-    batch_size=32,
+    dataset: TasksDataset,
+    batch_size=BATCH_SIZE,
     num_workers=8,
     shuffle=True,
     pin_memory=True,
 ):
-    dataset = TasksDataset(root_dir, corpus_filepath)
-    pad_idx = dataset.vocab.stoi[PAD_TOKEN]
-    collate = TasksCollate(pad_idx)
+    collate = TasksCollate(PAD_IDX)
     return DataLoader(
         dataset=dataset, 
         batch_size=batch_size, 
@@ -125,10 +80,3 @@ def get_loader(
         pin_memory=pin_memory, 
         collate_fn=collate,
     )
-
-
-if __name__ == "__main__":
-    dataloader = get_loader("idk", "dataset")
-    for idx, (input, output) in enumerate(dataloader):
-        print(input.shape)
-        print(output.shape)

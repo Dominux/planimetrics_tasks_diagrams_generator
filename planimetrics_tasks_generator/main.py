@@ -1,8 +1,11 @@
+import math
+
 from torch import Tensor
 import torch
 import torch.nn as nn
 from torch.nn import Transformer
-import math
+
+from tokenizers.constants import END_IDX, PAD_IDX, START_IDX
 
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -32,12 +35,13 @@ class PositionalEncoding(nn.Module):
 # helper Module to convert tensor of input indices into corresponding tensor of token embeddings
 class TokenEmbedding(nn.Module):
     def __init__(self, vocab_size: int, emb_size):
-        super(TokenEmbedding, self).__init__()
+        super().__init__()
         self.embedding = nn.Embedding(vocab_size, emb_size)
         self.emb_size = emb_size
 
     def forward(self, tokens: Tensor):
         return self.embedding(tokens.long()) * math.sqrt(self.emb_size)
+
 
 # Seq2Seq Network
 class Seq2SeqTransformer(nn.Module):
@@ -87,14 +91,14 @@ class Seq2SeqTransformer(nn.Module):
                           tgt_mask)
 
 
-from test import END_TOKEN, START_TOKEN, get_loader, PAD_TOKEN
+from settings import EMB_SIZE, FFN_HID_DIM, LEARNING_RATE, NHEAD, NUM_DECODER_LAYERS, NUM_ENCODER_LAYERS, NUM_EPOCHS
+from test import TasksDataset, get_loader
 
-
-train_dataloader = get_loader("idk", "train_dataset")
-
-PAD_IDX = train_dataloader.dataset.vocab.stoi[PAD_TOKEN]
-END_IDX = train_dataloader.dataset.vocab.stoi[END_TOKEN]
-START_IDX = train_dataloader.dataset.vocab.stoi[START_TOKEN]
+dataset = TasksDataset("dataset")
+train_dataset, val_dataset = dataset.divide(0.2)
+val_dataset, test_dataset = dataset.divide(0.1)
+train_dataloader = get_loader(train_dataset)
+val_dataloader = get_loader(val_dataset)
 
 
 def generate_square_subsequent_mask(sz):
@@ -117,14 +121,9 @@ def create_mask(src, tgt):
 
 torch.manual_seed(0)
 
-SRC_VOCAB_SIZE = len(train_dataloader.dataset.vocab.stoi)
-TGT_VOCAB_SIZE = len(train_dataloader.dataset.vocab.itos)
-EMB_SIZE = 512
-NHEAD = 8
-FFN_HID_DIM = 512
-BATCH_SIZE = 128
-NUM_ENCODER_LAYERS = 3
-NUM_DECODER_LAYERS = 3
+SRC_VOCAB_SIZE = len(train_dataset.src_tokenizer.word2index)
+TGT_VOCAB_SIZE = len(train_dataset.tgt_tokenizer.index2word)
+
 
 transformer = Seq2SeqTransformer(NUM_ENCODER_LAYERS, NUM_DECODER_LAYERS, EMB_SIZE,
                                  NHEAD, SRC_VOCAB_SIZE, TGT_VOCAB_SIZE, FFN_HID_DIM)
@@ -137,7 +136,7 @@ transformer = transformer.to(DEVICE)
 
 loss_fn = torch.nn.CrossEntropyLoss(ignore_index=PAD_IDX)
 
-optimizer = torch.optim.Adam(transformer.parameters(), lr=0.0001, betas=(0.9, 0.98), eps=1e-9)
+optimizer = torch.optim.Adam(transformer.parameters(), lr=LEARNING_RATE, betas=(0.9, 0.98), eps=1e-9)
 
 
 def train_epoch(model, optimizer):
@@ -165,11 +164,7 @@ def train_epoch(model, optimizer):
 
     return losses / len(list(train_dataloader))
 
-
-val_dataloader = get_loader("idk", "validation_dataset")
-
-
-def evaluate(model):
+def validate(model):
     model.eval()
     losses = 0
 
@@ -191,13 +186,12 @@ def evaluate(model):
 
 
 from timeit import default_timer as timer
-NUM_EPOCHS = 8
 
 for epoch in range(1, NUM_EPOCHS+1):
     start_time = timer()
     train_loss = train_epoch(transformer, optimizer)
     end_time = timer()
-    val_loss = evaluate(transformer)
+    val_loss = validate(transformer)
     print((f"Epoch: {epoch}, Train loss: {train_loss:.3f}, Val loss: {val_loss:.3f}, "f"Epoch time = {(end_time - start_time):.3f}s"))
 
 
@@ -224,19 +218,33 @@ def greedy_decode(model, src, src_mask, max_len, start_symbol):
             break
     return ys
 
-
 # actual function to translate input sentence into target language
 def translate(model: torch.nn.Module, src_sentence: str):
     model.eval()
-    src = train_dataloader.dataset._to_tensor(src_sentence).view(-1, 1)
+    src = train_dataset.src_tokenizer.encode(src_sentence).view(-1, 1)
     num_tokens = src.shape[0]
     src_mask = torch.zeros(num_tokens, num_tokens).type(torch.bool)
     tgt_tokens = greedy_decode(
         model,  src, src_mask, max_len=num_tokens + 5, start_symbol=START_IDX).flatten()
-    return train_dataloader.dataset.from_indeces(tgt_tokens.cpu().numpy())
+    return train_dataloader.dataset.from_indeces(tgt_tokens.cpu().numpy()) # type: ignore
 
+def evaluate(model):
+    right_translations_counter = 0
 
-input = train_dataloader.dataset._data._pairs[0][0]
+    for i in range(len(test_dataset)):
+        src = test_dataset.src_tokenizer.all_sentences[i]
+        tgt = test_dataset.tgt_tokenizer.all_sentences[i]
+        
+        if translate(model, src) == tgt:
+            right_translations_counter += 1
+    
+    return right_translations_counter
 
-output = translate(transformer, input)
-print(f"{input=}, {output=}")
+right_translations = evaluate(transformer)
+print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
+
+src = "Сторона ZY треугольника ZYH равна 14 мм, сторона YH вдвое больше стороны ZY, а сторона HZ на 21 мм меньше стороны YH. Найдите периметр треугольника ZYH."
+expected_tgt = "ZYH"
+
+output = translate(transformer, src)
+print(f"input: {src}, expected: {expected_tgt}, got: {output}")

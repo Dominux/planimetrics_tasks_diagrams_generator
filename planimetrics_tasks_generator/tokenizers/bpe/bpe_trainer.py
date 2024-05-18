@@ -5,7 +5,7 @@ from collections import Counter, defaultdict
 
 from tokenizers.base import BaseTrainer, CorpusReprType
 from tokenizers.bpe.bpe_tokenizer import BPETokenizer
-from tokenizers.constants import EOS_TOKEN, SOS_TOKEN
+from tokenizers.constants import PAD_TOKEN, START_TOKEN, END_TOKEN, UNKNOWN_TOKEN
 
 
 class BPETrainer(BaseTrainer):
@@ -20,7 +20,7 @@ class BPETrainer(BaseTrainer):
     def train(
         self, iterations_amount: int = 50, file_ext: str = ".txt"
     ) -> BPETokenizer:
-        corpus = self._read_corpus(self._corpus_filepath, file_ext).lower()
+        corpus = self._read_corpus(self._corpus_filepath, file_ext)
         corpus_repr = self._build_corpus_repr(corpus)
         vocab = self._build_vocab(corpus)  # Step 1
 
@@ -51,7 +51,7 @@ class BPETrainer(BaseTrainer):
                         sentence = f.read()
                         self.all_sentences.append(sentence)
 
-                        sentence = f"{SOS_TOKEN}{sentence}{EOS_TOKEN}"
+                        sentence = f"{START_TOKEN}{sentence}{END_TOKEN}"
                         corpus = f"{corpus}\n{sentence}"
 
         return corpus
@@ -66,7 +66,7 @@ class BPETrainer(BaseTrainer):
     @staticmethod
     def _build_corpus_repr(corpus: str) -> CorpusReprType:
         # Separate each char in word by space and add mark end of token
-        tokens = [EOS_TOKEN, SOS_TOKEN]
+        tokens = [START_TOKEN, END_TOKEN]
 
         tokens.extend(
             (

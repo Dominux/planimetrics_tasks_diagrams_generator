@@ -9,11 +9,11 @@ from math_tasks_generator.base import MathTaskUnit
 import math_tasks_generator.math_tasks
 
 
-AMOUNT = 1000
+AMOUNT = 5000
 
 
 class MainGenerator:
-    path = Path("dataset")
+    path = Path("../dataset")
 
     @classmethod
     def generate(cls, amount: int = AMOUNT):
@@ -30,10 +30,4 @@ class MainGenerator:
 
 
 if __name__ == "__main__":
-    # generating train dataset
-    MainGenerator.path = Path("../train_dataset")
-    MainGenerator.generate(AMOUNT)
-    
-    # generating validation dataset
-    MainGenerator.path = Path("../validation_dataset")
     MainGenerator.generate(AMOUNT)

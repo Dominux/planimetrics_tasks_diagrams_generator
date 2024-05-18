@@ -2,5 +2,3 @@ __pycache__/
 
 examples/
 dataset/
-train_dataset/
-validation_dataset/
