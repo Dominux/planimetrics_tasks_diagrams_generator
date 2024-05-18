@@ -28,28 +28,7 @@ class Task99(MathTask[Task99Params]):
         ∠{point_C}{point_B}{point_D} = ∠{point_D}{point_E}{point_C}
     """
 
-    _vector_template = """
-        <defs></defs>
-        <path d="M0,0 L9,2" stroke-width="0.2" stroke="black" />
-        <path d="M9,2 L-1,-14" stroke-width="0.2" stroke="black" />
-        <path d="M-1,-14 L0,0" stroke-width="0.2" stroke="black" />
-        <text x="0.3" y="-0.3" font-size="1.5" dy="0em">{point_C}</text>
-        <text x="-1.5" y="-14.3" font-size="1.5" dy="0em">{point_A}</text>
-        <text x="9.3" y="2.5" font-size="1.5" dy="0em">{point_D}</text>
-
-        <path d="M-0.3,-5 L5.2,-4" stroke-width="0.2" stroke="black" />
-        <text x="0" y="-5.3" font-size="1.5" dy="0em">{point_B}</text>
-        <text x="5.6" y="-3.8" font-size="1.5" dy="0em">{point_E}</text>
-
-        <path d="M-0.7,-2.5 L0.3,-2.4" stroke-width="0.1" stroke="black" />
-        <path d="M7.4,-1.4 L6.4,-1.2" stroke-width="0.1" stroke="black" />
-
-        <path d="M-1.2,-9 L-0.2,-8.9" stroke-width="0.1" stroke="black" />
-        <path d="M-1.2,-9.3 L-0.2,-9.2" stroke-width="0.1" stroke="black" />
-
-        <path d="M1.7,-8.8 L2.7,-8.9" stroke-width="0.1" stroke="black" />
-        <path d="M1.5,-9.1 L2.5,-9.2" stroke-width="0.1" stroke="black" />
-    """
+    _triangles_params_key = ("triangle_ABC", "triangle_A1B1C1")
 
 
 class Task99Generator(MathTaskGenerator[Task99Params]):

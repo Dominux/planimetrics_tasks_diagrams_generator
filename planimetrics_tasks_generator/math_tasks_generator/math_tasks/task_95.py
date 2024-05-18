@@ -39,37 +39,7 @@ class Task95(MathTask[Task95Params]):
         б) найдите {side_1} и {side_2}, если {side_4} = {side_4_size} {units}, {side_3} = {side_3_size} {units}
     """
 
-    _vector_template = """
-        <defs></defs>
-
-        <path d="M0,0 L3,-8" stroke-width="0.2" stroke="black" />
-        <path d="M0,0 L12,0" stroke-width="0.2" stroke="black" />
-        <path d="M3,-8 L15,-8" stroke-width="0.2" stroke="black" />
-        <path d="M12,0 L15,-8" stroke-width="0.2" stroke="black" />
-        <path d="M0,0 L15,-8" stroke-width="0.2" stroke="black" />
-
-        <text x="0" y="1.6" font-size="1.5" dy="0em">{point_1}</text>
-        <text x="1.7" y="-8" font-size="1.5" dy="0em">{point_2}</text>
-        <text x="15.3" y="-8" font-size="1.5" dy="0em">{point_3}</text>
-        <text x="12" y="1.5" font-size="1.5" dy="0em">{point_4}</text>
-
-        <path d="M8,-8.4 L7.7,-7.6" stroke-width="0.1" stroke="black" />
-        <path d="M7,-0.4 L6.7,0.4" stroke-width="0.1" stroke="black" />
-
-        <text x="10.5" y="-6.5" font-size="1.2" dy="0em">1</text>
-        <path d="M 12.7 -8 A 0.5 0.5 0 0 0 13.3 -7.1" fill="none" stroke-width="0.1" stroke="black"/>
-
-        <text x="3.5" y="-0.5" font-size="1.2" dy="0em">2</text>
-        <path d="M 1.7 0 A 0.5 0.5 0 0 0 1.6 -0.9" fill="none" stroke-width="0.1" stroke="black"/>
-
-        <text x="11.5" y="-3.8" font-size="1.2" dy="0em">3</text>
-        <path d="M 12.1 -6.5 A 0.5 0.5 0 0 0 14.2 -5.7" fill="none" stroke-width="0.1" stroke="black"/>
-        <path d="M 12.5 -6.7 A 0.5 0.5 0 0 0 14.3 -6.2" fill="none" stroke-width="0.1" stroke="black"/>
-
-        <text x="2.5" y="-2.8" font-size="1.2" dy="0em">4</text>
-        <path d="M 1.1 -2.8 A 0.5 0.5 0 0 1 2.2 -1.1" fill="none" stroke-width="0.1" stroke="black"/>
-        <path d="M 0.7 -2 A 0.5 0.5 0 0 1 1.9 -1.1" fill="none" stroke-width="0.1" stroke="black"/>
-    """
+    _triangles_params_key = ("triangle_1", "triangle_2")
 
 
 class Task95Generator(MathTaskGenerator[Task95Params]):

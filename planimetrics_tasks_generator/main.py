@@ -92,11 +92,11 @@ class Seq2SeqTransformer(nn.Module):
 
 
 from settings import EMB_SIZE, FFN_HID_DIM, LEARNING_RATE, NHEAD, NUM_DECODER_LAYERS, NUM_ENCODER_LAYERS, NUM_EPOCHS
-from test import TasksDataset, get_loader
+from data_loader import TasksDataset, get_loader
 
 dataset = TasksDataset("dataset")
-train_dataset, val_dataset = dataset.divide(0.2)
-val_dataset, test_dataset = dataset.divide(0.1)
+train_dataset, val_dataset = dataset.divide(0.3)
+train_dataset, test_dataset = train_dataset.divide(0.1)
 train_dataloader = get_loader(train_dataset)
 val_dataloader = get_loader(val_dataset)
 
@@ -162,7 +162,7 @@ def train_epoch(model, optimizer):
         optimizer.step()
         losses += loss.item()
 
-    return losses / len(list(train_dataloader))
+    return losses / len(train_dataloader )
 
 def validate(model):
     model.eval()
@@ -182,7 +182,7 @@ def validate(model):
         loss = loss_fn(logits.reshape(-1, logits.shape[-1]), tgt_out.reshape(-1))
         losses += loss.item()
 
-    return losses / len(list(val_dataloader))
+    return losses / len(val_dataloader)
 
 
 from timeit import default_timer as timer
@@ -192,7 +192,7 @@ for epoch in range(1, NUM_EPOCHS+1):
     train_loss = train_epoch(transformer, optimizer)
     end_time = timer()
     val_loss = validate(transformer)
-    print((f"Epoch: {epoch}, Train loss: {train_loss:.3f}, Val loss: {val_loss:.3f}, "f"Epoch time = {(end_time - start_time):.3f}s"))
+    print((f"Epoch: {epoch}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, "f"Epoch time = {(end_time - start_time):.2f}s"))
 
 
 # function to generate output sequence using greedy algorithm
@@ -239,6 +239,7 @@ def evaluate(model):
             right_translations_counter += 1
     
     return right_translations_counter
+
 
 right_translations = evaluate(transformer)
 print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")

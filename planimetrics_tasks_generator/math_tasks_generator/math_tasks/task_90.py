@@ -36,7 +36,7 @@ class Task90(MathTask[Task90Params]):
         Найдите периметр треугольника {triangle}.
     """
 
-    _triangle_params_key = "triangle"
+    _triangles_params_key = ("triangle",)
 
 
 class Task90Generator(MathTaskGenerator[Task90Params]):

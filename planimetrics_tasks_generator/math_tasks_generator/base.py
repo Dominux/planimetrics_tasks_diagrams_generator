@@ -1,6 +1,8 @@
 import abc
 from dataclasses import asdict
-from typing import Generic, Type, TypeVar
+from typing import Generic, Type, TypeVar, TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Iterable
 
 
 Params = TypeVar("Params")
@@ -13,7 +15,7 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
 
     _task_number: int
     _prompt_template: str = ""
-    _triangle_params_key: str = ""
+    _triangles_params_key: "Iterable[str]"
 
     def __init__(self, params: "Params", minify: bool = False, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -27,7 +29,7 @@ class MathTask(Generic[Params], metaclass=abc.ABCMeta):
 
     @property
     def figure(self) -> str:
-        return getattr(self._params, self._triangle_params_key)
+        return "\n".join(getattr(self._params, k) for k in self._triangles_params_key)
 
     @staticmethod
     def minify_text(raw_text: str) -> str:
