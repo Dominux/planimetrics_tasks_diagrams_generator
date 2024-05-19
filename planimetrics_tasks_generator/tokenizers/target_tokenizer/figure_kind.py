@@ -11,7 +11,7 @@ class FigureKindInvariant(abc.ABC):
     @abc.abstractmethod
     def format(self) -> str:
         ...
-
+    
 
 class TriangleInvariant(FigureKindInvariant):
     name = "triangle"
@@ -22,3 +22,7 @@ class TriangleInvariant(FigureKindInvariant):
 
 class FigureKind(enum.Enum):
     Triangle = TriangleInvariant
+
+    @staticmethod
+    def names():
+        return [sub.name for sub in FigureKindInvariant.__subclasses__()]

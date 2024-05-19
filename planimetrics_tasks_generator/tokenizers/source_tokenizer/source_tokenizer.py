@@ -1,32 +1,52 @@
 from __future__ import annotations
 
+import string
 from typing import Iterable
 
 import torch
 
 from tokenizers.base import BaseTokenizer
-from tokenizers.constants import DEFAULT_TOKENS, END_IDX, START_IDX
+from tokenizers.constants import SPECIAL_TOKENS, END_IDX, START_IDX, SUBSCRIPT_NUMBERS
 from tokenizers.helpers import swap_2_elements_in_list
 
 
-class BPETokenizer(BaseTokenizer):
+RUSSIAN_ALPHABET = "абвгдежзийклмнопрстуфхцчшщъыьэюя"
+DEFAULT_VOCAB = [
+    *string.ascii_lowercase,
+    *string.digits,
+    *string.whitespace, 
+    *string.punctuation,
+    *RUSSIAN_ALPHABET,
+    *SUBSCRIPT_NUMBERS,
+]
+INITIAL_VOCAB = [*SPECIAL_TOKENS, *DEFAULT_VOCAB]
+
+
+class SourceTokenizer(BaseTokenizer):
     """
     Byte-pair encoding tokenizer
+
+    #### WARNING: 
+    This tokenizer is not lossless
+
+    For a better translation of cases where "е" is used instead of "ё",
+    this tokenizer replaces one with another during its encoding process.
+    Therefore it leads to losing originallity
     """
 
     whitespace_character = "🕳"
 
-    def __init__(self, vocab: Iterable[str], all_sentences: list[str]) -> None:
+    def __len__(self) -> int:
+        return len(self.index2word)
+
+    def __init__(self, vocab: Iterable[str]) -> None:
         # Changing vocab a bit
         vocab = list(vocab)
-        for i, token in enumerate(DEFAULT_TOKENS):
+        for i, token in enumerate(INITIAL_VOCAB):
             swap_2_elements_in_list(vocab, token, i)
 
         self.word2index = {token: i for i, token in enumerate(vocab)}
-        self.index2word = {i: token for i, token in enumerate(vocab)}
-
-        self.all_sentences = all_sentences
-        self.vocab_amount = len(vocab)  # type: ignore
+        self.index2word = vocab
 
     def encode(self, text: str):
         # preparing text

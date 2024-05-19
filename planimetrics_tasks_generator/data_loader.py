@@ -4,7 +4,7 @@ import random
 from typing import TYPE_CHECKING
 
 from settings import BATCH_SIZE
-from tokenizers.bpe.bpe_trainer import BPETrainer
+from tokenizers.source_tokenizer.bpe_trainer import BPETrainer
 from tokenizers.constants import END_TOKEN, PAD_IDX, START_TOKEN
 if TYPE_CHECKING:
     from typing import Any

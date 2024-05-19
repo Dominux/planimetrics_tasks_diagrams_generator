@@ -1,16 +1,11 @@
 import abc
+import typing as t
 
 
-CorpusReprType = dict[str, int]
-
-
-class BaseTokenizer(abc.ABC):
+class BaseTokenizer(t.Sized, metaclass=abc.ABCMeta):
     """
     Base class for all tokenizers
     """
-
-    vocab_amount: int
-    all_sentences: list[str]
 
     @abc.abstractmethod
     def encode(self, text: str) -> list[int]:

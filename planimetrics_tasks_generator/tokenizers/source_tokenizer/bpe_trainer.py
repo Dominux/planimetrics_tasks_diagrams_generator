@@ -1,11 +1,13 @@
-import os
-from pathlib import Path
 import re
+from typing import TYPE_CHECKING
 from collections import Counter, defaultdict
 
 from tokenizers.base import BaseTrainer, CorpusReprType
-from tokenizers.bpe.bpe_tokenizer import BPETokenizer
-from tokenizers.constants import PAD_TOKEN, START_TOKEN, END_TOKEN, UNKNOWN_TOKEN
+from tokenizers.constants import START_TOKEN, END_TOKEN
+from tokenizers.source_tokenizer.source_tokenizer import SourceTokenizer
+
+if TYPE_CHECKING:
+    import typing as t
 
 
 class BPETrainer(BaseTrainer):
@@ -15,12 +17,12 @@ class BPETrainer(BaseTrainer):
     After train it returns a class to encode/decode text to/from vector via BPE
     """
 
-    _class = BPETokenizer
+    _class = SourceTokenizer
 
     def train(
-        self, iterations_amount: int = 50, file_ext: str = ".txt"
-    ) -> BPETokenizer:
-        corpus = self._read_corpus(self._corpus_filepath, file_ext)
+        self, sentences: "t.Iterable[str]", iterations_amount: int = 50
+    ) -> "SourceTokenizer":
+        corpus = self._construct_corpus(sentences)
         corpus_repr = self._build_corpus_repr(corpus)
         vocab = self._build_vocab(corpus)  # Step 1
 
@@ -39,28 +41,14 @@ class BPETrainer(BaseTrainer):
 
         return self._class(vocab.keys(), all_sentences=self.all_sentences)
 
-    def _read_corpus(self, basepath: Path, file_ext: str) -> str:
-        corpus = ""
+    def _construct_corpus(self, sentences: "t.Iterable[str]") -> str:
+        return "\n".join(f"{START_TOKEN}{sentence}{END_TOKEN}" for sentence in sentences)
 
-        # reading corpus files
-        for root, _, files in os.walk(basepath):
-            for filepath in files:
-                if filepath.endswith(file_ext):
-                    fullpath = Path(root) / filepath
-                    with open(fullpath) as f:
-                        sentence = f.read()
-                        self.all_sentences.append(sentence)
-
-                        sentence = f"{START_TOKEN}{sentence}{END_TOKEN}"
-                        corpus = f"{corpus}\n{sentence}"
-
-        return corpus
-
-    @staticmethod
-    def _build_vocab(corpus: str) -> dict[str, None]:
+    @classmethod
+    def _build_vocab(cls, corpus: str) -> dict[str, None]:
         return {
             symbol: None
-            for symbol in iter(corpus.replace(" ", BPETokenizer.whitespace_character))
+            for symbol in iter(corpus.replace(" ", SourceTokenizer.whitespace_character))
         }
 
     @staticmethod
@@ -70,7 +58,7 @@ class BPETrainer(BaseTrainer):
 
         tokens.extend(
             (
-                " ".join(f"{word}{BPETokenizer.whitespace_character}")
+                " ".join(f"{word}{SourceTokenizer.whitespace_character}")
                 for word in corpus.split()
             )
         )
