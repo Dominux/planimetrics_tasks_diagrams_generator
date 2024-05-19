@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader, Dataset
 
 
 class TasksDataset(Dataset):
+    # TODO: set freq_treshold as 5
     def __init__(self, corpus_filepath: "Path | str", freq_treshold=1) -> None:
         self.src_tokenizer = BPETrainer(corpus_filepath).train()
         self.tgt_tokenizer = BPETrainer(corpus_filepath).train(file_ext=".figure")
@@ -40,7 +41,6 @@ class TasksDataset(Dataset):
     def __getitem__(self, index: "int"):
         src = self.src_tokenizer.all_sentences[index]
         tgt = self.tgt_tokenizer.all_sentences[index]
-
         return (self.src_tokenizer.encode(src), self.tgt_tokenizer.encode(tgt))
     
     def from_indeces(self, indeces: "list[int]") -> str:
