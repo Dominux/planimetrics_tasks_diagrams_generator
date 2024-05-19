@@ -59,8 +59,8 @@ class DataProvider:
         val_point = round(len(self) * val_fraction)
         test_point = round(len(self) * fractions_sum)
 
-        val_data = DataProvider(self._pairs[val_point:], shuffle=False)
+        val_data = DataProvider(self._pairs[:val_point], shuffle=False)
         test_data = DataProvider(self._pairs[val_point : test_point], shuffle=False)
-        self._pairs = self._pairs[:test_point]
+        self._pairs = self._pairs[test_point:]
 
         return self, val_data, test_data

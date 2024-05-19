@@ -1,3 +1,9 @@
+import torch
+
+
+torch.manual_seed(0)
+
+
 VAL_FRACTION = 0.3
 TEST_FRACTION = 0.1
 
@@ -9,4 +15,4 @@ NUM_ENCODER_LAYERS = 3
 NUM_DECODER_LAYERS = 3
 
 LEARNING_RATE = 3e-4
-NUM_EPOCHS = 20
+NUM_EPOCHS = 10

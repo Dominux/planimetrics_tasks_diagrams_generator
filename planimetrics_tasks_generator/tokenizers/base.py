@@ -1,6 +1,9 @@
 import abc
 import typing as t
 
+if t.TYPE_CHECKING:
+    import torch
+
 
 class BaseTokenizer(t.Sized, metaclass=abc.ABCMeta):
     """
@@ -8,7 +11,7 @@ class BaseTokenizer(t.Sized, metaclass=abc.ABCMeta):
     """
 
     @abc.abstractmethod
-    def encode(self, text: str) -> list[int]:
+    def encode(self, text: str) -> "torch.Tensor":
         """
         text -> vector
         """

@@ -1,16 +1,13 @@
 import typing as t
 
-from settings import BATCH_SIZE
-from tokenizers.constants import END_TOKEN, PAD_IDX, START_TOKEN
-if t.TYPE_CHECKING:
-    from tokenizers import SourceTokenizer, TargetTokenizer
-    from data_provider import DataProvider
-
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader, Dataset
 
-
-# https://www.youtube.com/watch?v=9sHcLvVXsns
+from settings import BATCH_SIZE
+from tokenizers.constants import PAD_IDX
+if t.TYPE_CHECKING:
+    from tokenizers import SourceTokenizer, TargetTokenizer
+    from data_provider import DataProvider
 
 
 class TasksDataset(Dataset):
@@ -28,12 +25,9 @@ class TasksDataset(Dataset):
         return len(self._data_provider)
 
     def __getitem__(self, index: "int"):
-        return self._data_provider[index]
+        src, tgt = self._data_provider[index]
+        return self._src_tokenizer.encode(src), self._tgt_tokenizer.encode(tgt)
     
-    def from_indeces(self, indeces: "t.Iterable[int]") -> str:
-        return self._tgt_tokenizer.decode(indeces).replace(START_TOKEN, "").replace(END_TOKEN, "")
-
-
 def collate(batch: "list[tuple[t.Any, t.Any]]"):
     inputs = [pair[0] for pair in batch]
     inputs = pad_sequence(inputs, batch_first=False, padding_value=PAD_IDX)
@@ -41,7 +35,6 @@ def collate(batch: "list[tuple[t.Any, t.Any]]"):
     outputs = pad_sequence(outputs, batch_first=False, padding_value=PAD_IDX)
 
     return inputs, outputs
-
 
 def get_loader(
     dataset: "TasksDataset",

@@ -86,7 +86,7 @@ class SourceTokenizer(BaseTokenizer):
     
     @classmethod
     def clear_src(cls, src: str) -> str:
-        return src.replace("ё", "").replace(" ", cls.whitespace_character)
+        return src.lower().replace("ё", "").replace(" ", cls.whitespace_character)
 
     def decode_index(self, index: int) -> str:
         return self.index2word[index].replace(self.whitespace_character, " ")
