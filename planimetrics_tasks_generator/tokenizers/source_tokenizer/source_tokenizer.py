@@ -50,7 +50,7 @@ class SourceTokenizer(BaseTokenizer):
 
     def encode(self, text: str):
         # preparing text
-        text = text.replace(" ", self.whitespace_character)
+        text = self.clear_src(text)
 
         vector = []
 
@@ -83,6 +83,10 @@ class SourceTokenizer(BaseTokenizer):
             END_IDX
         ]
         return torch.tensor(vector)
+    
+    @classmethod
+    def clear_src(cls, src: str) -> str:
+        return src.replace("ё", "").replace(" ", cls.whitespace_character)
 
     def decode_index(self, index: int) -> str:
         return self.index2word[index].replace(self.whitespace_character, " ")

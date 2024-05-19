@@ -2,7 +2,6 @@ import re
 from typing import TYPE_CHECKING
 from collections import Counter, defaultdict
 
-from tokenizers.base import BaseTrainer, CorpusReprType
 from tokenizers.constants import START_TOKEN, END_TOKEN
 from tokenizers.source_tokenizer.source_tokenizer import SourceTokenizer
 
@@ -10,14 +9,12 @@ if TYPE_CHECKING:
     import typing as t
 
 
-class BPETrainer(BaseTrainer):
+class BPETrainer:
     """
     Class to train a Byte-pair encoding tokenizer
 
     After train it returns a class to encode/decode text to/from vector via BPE
     """
-
-    _class = SourceTokenizer
 
     def train(
         self, sentences: "t.Iterable[str]", iterations_amount: int = 50
@@ -39,20 +36,17 @@ class BPETrainer(BaseTrainer):
             # step 4
             vocab = self.update_vocab(vocab, pairs=pairs.keys())  # type: ignore
 
-        return self._class(vocab.keys(), all_sentences=self.all_sentences)
+        return SourceTokenizer(vocab.keys())
 
     def _construct_corpus(self, sentences: "t.Iterable[str]") -> str:
         return "\n".join(f"{START_TOKEN}{sentence}{END_TOKEN}" for sentence in sentences)
 
     @classmethod
     def _build_vocab(cls, corpus: str) -> dict[str, None]:
-        return {
-            symbol: None
-            for symbol in iter(corpus.replace(" ", SourceTokenizer.whitespace_character))
-        }
+        return {symbol: None for symbol in SourceTokenizer.clear_src(corpus)}
 
     @staticmethod
-    def _build_corpus_repr(corpus: str) -> CorpusReprType:
+    def _build_corpus_repr(corpus: str):
         # Separate each char in word by space and add mark end of token
         tokens = [START_TOKEN, END_TOKEN]
 
@@ -67,7 +61,7 @@ class BPETrainer(BaseTrainer):
         return Counter(tokens)
 
     @staticmethod
-    def get_stats(corpus_repr: CorpusReprType) -> CorpusReprType:
+    def get_stats(corpus_repr):
         pairs = defaultdict(int)
         for word, frequency in corpus_repr.items():
             symbols = word.split()
@@ -79,7 +73,7 @@ class BPETrainer(BaseTrainer):
         return pairs
 
     @staticmethod
-    def update_corpus(pair: tuple, v_in: CorpusReprType) -> CorpusReprType:
+    def update_corpus(pair: tuple, v_in):
         v_out = {}
 
         bigram = re.escape(" ".join(pair))
