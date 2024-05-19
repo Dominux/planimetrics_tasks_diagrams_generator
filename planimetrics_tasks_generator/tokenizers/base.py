@@ -13,7 +13,7 @@ class BaseTokenizer(t.Sized, metaclass=abc.ABCMeta):
         text -> vector
         """
 
-    def decode(self, vector: list[int]) -> str:
+    def decode(self, vector: "t.Iterable[int]") -> str:
         """
         vector -> text
         """

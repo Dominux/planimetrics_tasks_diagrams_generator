@@ -56,8 +56,8 @@ class DataProvider:
         fractions_sum = val_fraction + test_fraction
         assert fractions_sum < 1, "Sum of `val_fraction` and`test_fraction` must be less than 1"
 
-        val_point = len(self) * val_fraction
-        test_point = len(self) * fractions_sum
+        val_point = round(len(self) * val_fraction)
+        test_point = round(len(self) * fractions_sum)
 
         val_data = DataProvider(self._pairs[val_point:], shuffle=False)
         test_data = DataProvider(self._pairs[val_point : test_point], shuffle=False)
