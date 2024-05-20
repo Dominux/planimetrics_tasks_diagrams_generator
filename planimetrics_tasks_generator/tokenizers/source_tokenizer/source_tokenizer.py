@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import string
-from typing import Iterable
+import typing as t
 
 import torch
 
@@ -39,7 +39,7 @@ class SourceTokenizer(BaseTokenizer):
     def __len__(self) -> int:
         return len(self.index2word)
 
-    def __init__(self, vocab: Iterable[str]) -> None:
+    def __init__(self, vocab: "t.Iterable[str]") -> None:
         # Changing vocab a bit
         vocab = list(vocab)
         for i, token in enumerate(INITIAL_VOCAB):
@@ -50,7 +50,7 @@ class SourceTokenizer(BaseTokenizer):
 
     def encode(self, text: str):
         # preparing text
-        text = self.clear_src(text)
+        text = self.clear(text)
 
         vector = []
 
@@ -85,8 +85,11 @@ class SourceTokenizer(BaseTokenizer):
         return torch.tensor(vector)
     
     @classmethod
-    def clear_src(cls, src: str) -> str:
+    def clear(cls, src: str) -> str:
         return src.lower().replace("ё", "").replace(" ", cls.whitespace_character)
 
     def decode_index(self, index: int) -> str:
         return self.index2word[index].replace(self.whitespace_character, " ")
+    
+    def decode(self, vector: "t.Iterable[int]") -> str:
+        return super().decode(vector).upper()

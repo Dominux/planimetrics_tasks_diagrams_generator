@@ -43,7 +43,7 @@ class BPETrainer:
 
     @classmethod
     def _build_vocab(cls, corpus: str) -> dict[str, None]:
-        return {symbol: None for symbol in SourceTokenizer.clear_src(corpus)}
+        return {symbol: None for symbol in SourceTokenizer.clear(corpus)}
 
     @staticmethod
     def _build_corpus_repr(corpus: str):

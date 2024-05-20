@@ -29,7 +29,7 @@ def create_mask(src, tgt):
     tgt_padding_mask = (tgt == PAD_IDX).transpose(0, 1)
     return src_mask, tgt_mask, src_padding_mask, tgt_padding_mask
 
-def train_epoch(model, loss_fn, optimizer, dataloader: "DataLoader"):
+def train_epoch(model: "torch.nn.Module", loss_fn, optimizer, dataloader: "DataLoader"):
     model.train()
     losses = 0
 
@@ -136,7 +136,7 @@ def translate(
         max_len=num_tokens + 5, 
         start_symbol=START_IDX
     ).flatten()
-    return tgt_tokenizer.from_indeces(tgt_tokens.cpu().numpy())
+    return tgt_tokenizer.decode(tgt_tokens.cpu().numpy())
 
 def evaluate(
     model, 
@@ -149,8 +149,7 @@ def evaluate(
 
     for i in range(len(dataset)):
         src, tgt = data_provider[i]
-        tgt = tgt_tokenizer.clear_tgt(tgt)
-        
+       
         if translate(model, src, src_tokenizer, tgt_tokenizer) == tgt:
             right_translations_counter += 1
     

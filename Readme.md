@@ -4,4 +4,4 @@
 
 ## Architecture
 
-![Arhitecture scheme](arch.excalidraw.svg)
+![Data arhitecture scheme](arch.excalidraw.svg)
