@@ -9,11 +9,12 @@ from math_tasks_generator.base import (
     MathTask,
     MathTaskGenerator,
     MathTaskUnit,
+    Params,
 )
 
 
 @dataclass
-class Task90Params:
+class Task90Params(Params):
     point_1: str
     point_2: str
     point_3: str

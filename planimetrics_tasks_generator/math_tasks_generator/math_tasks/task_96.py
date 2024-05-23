@@ -5,12 +5,13 @@ from math_tasks_generator.base import (
     MathTask,
     MathTaskGenerator,
     MathTaskUnit,
+    Params,
 )
 from math_tasks_generator.helpers import get_random_letters
 
 
 @dataclass
-class Task96Params:
+class Task96Params(Params):
     picture_number: int
     point_A: str
     point_B: str

@@ -4,12 +4,13 @@ from math_tasks_generator.base import (
     MathTask,
     MathTaskGenerator,
     MathTaskUnit,
+    Params,
 )
 from math_tasks_generator.helpers import get_random_letters
 
 
 @dataclass
-class Task99Params:
+class Task99Params(Params):
     point_A: str
     point_B: str
     point_C: str
