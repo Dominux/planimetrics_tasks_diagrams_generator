@@ -1,21 +1,30 @@
 import string
-import typing as t
 
 import torch
 
 from tokenizers.base import BaseTokenizer
-from tokenizers.constants import END_IDX, SPECIAL_TOKENS, START_IDX, SUBSCRIPT_NUMBERS
-from tokenizers.target_tokenizer.figure_kind import FigureKind
+from tokenizers.constants import SPECIAL_TOKENS, SUBSCRIPT_NUMBERS, START_IDX, END_IDX
 
 
+FIGURE_TOKENS = (
+    '[{',
+    '}]',
+    '"type":', 
+    '"name":',
+    '"length":',
+    '"rel_type":',
+    '"objects":[',
+    '"triangle"',
+    '"line"',
+    '"relation"',
+)
 DEFAULT_VOCAB = [
     *SPECIAL_TOKENS,
-    *string.ascii_lowercase,
-    *string.ascii_uppercase,
-    *string.whitespace,
+    *FIGURE_TOKENS,
+    *string.printable,
     *SUBSCRIPT_NUMBERS,
-    *FigureKind.names()
 ]
+
 
 class TargetTokenizer(BaseTokenizer):
     index2word = DEFAULT_VOCAB
@@ -23,21 +32,40 @@ class TargetTokenizer(BaseTokenizer):
 
     def __len__(self) -> int:
         return len(self.index2word)
-
+    
     def encode(self, text: str):
-        return torch.tensor(
-            (
-                START_IDX,
-                *[self.word2index[s] for s in self.clear(text)],
-                END_IDX
-            )
-        )
+        """Kinda tricky way"""
+        text = self.clear(text)
+
+        vector = []
+        i = 0 
+        while i < len(text):
+            to_continue = False
+            reminder = text[i:]
+
+            for fig_word in FIGURE_TOKENS:
+                if reminder.startswith(fig_word):
+
+                    index = self.word2index[fig_word]
+                    vector.append(index)
+                    i += len(fig_word)
+
+                    to_continue = True
+                    break
+
+            if to_continue:
+                continue
+            
+            symbol = text[i]
+            index = self.word2index[symbol]
+            vector.append(index)
+            i += 1
+        
+        return torch.tensor((START_IDX, *vector, END_IDX))
+            
 
     def decode_index(self, index: int) -> str:
         return self.index2word[index]
-    
-    def decode(self, vector: "t.Iterable[int]") -> str:
-        return super().decode(vector).upper()
     
     @classmethod
     def clear(cls, tgt: str) -> str:

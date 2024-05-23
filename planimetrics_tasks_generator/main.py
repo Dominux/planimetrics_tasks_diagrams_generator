@@ -74,7 +74,7 @@ def main():
     print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
 
     src = "Сторона ZY треугольника ZYH равна 14 мм, сторона YH вдвое больше стороны ZY, а сторона HZ на 21 мм меньше стороны YH. Найдите периметр треугольника ZYH."
-    expected_tgt = "ZYH"
+    expected_tgt = '[{"type":"triangle","name":"zyh"}]'
 
     output = translate(transformer, src, src_tokenizer, tgt_tokenizer)
     print(f"input: {src}, expected: {expected_tgt}, got: {output}")

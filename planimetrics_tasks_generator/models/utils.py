@@ -149,8 +149,9 @@ def evaluate(
 
     for i in range(len(dataset)):
         src, tgt = data_provider[i]
+        expected = tgt_tokenizer.clear(tgt)
        
-        if translate(model, src, src_tokenizer, tgt_tokenizer) == tgt:
+        if translate(model, src, src_tokenizer, tgt_tokenizer) == expected:
             right_translations_counter += 1
     
     return right_translations_counter

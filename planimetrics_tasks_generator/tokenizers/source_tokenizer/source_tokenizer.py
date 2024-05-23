@@ -27,7 +27,7 @@ class SourceTokenizer(BaseTokenizer):
     Byte-pair encoding tokenizer
 
     #### WARNING: 
-    This tokenizer is not lossless
+    This tokenizer is not lossless in terms of backward compatibility
 
     For a better translation of cases where "е" is used instead of "ё",
     this tokenizer replaces one with another during its encoding process.

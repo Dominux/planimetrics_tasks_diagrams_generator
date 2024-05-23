@@ -1,8 +1,6 @@
 import abc
 from dataclasses import asdict, dataclass
-from typing import Generic, Type, TYPE_CHECKING, TypeVar
-if TYPE_CHECKING:
-    from typing import Iterable
+from typing import Generic, Type, TypeVar
 
 
 @dataclass
@@ -19,8 +17,8 @@ class MathTask(Generic[TParams], metaclass=abc.ABCMeta):
     """
 
     _task_number: int
-    _prompt_template: str = ""
-    _triangles_params_key: "Iterable[str]"
+    _prompt_template: str
+    _figure_template: str
 
     def __init__(self, params: "Params", minify: bool = False, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -29,16 +27,17 @@ class MathTask(Generic[TParams], metaclass=abc.ABCMeta):
 
     @property 
     def prompt(self) -> str:
-        prompt = self._prompt_template.format(**asdict(self._params))
-        return self.minify_text(prompt)
+        prompt = self._prompt_template.format_map(asdict(self._params))
+        return self.minify_text(prompt, sep=" ")
 
     @property
     def figure(self) -> str:
-        return "\n".join(getattr(self._params, k) for k in self._triangles_params_key)
+        figure = self._figure_template.format_map(asdict(self._params))
+        return self.minify_text(figure)
 
     @staticmethod
-    def minify_text(raw_text: str) -> str:
-        return " ".join([line.strip() for line in raw_text.splitlines()]).strip()
+    def minify_text(raw_text: str, sep: str = "") -> str:
+        return sep.join([line.strip() for line in raw_text.splitlines()]).strip()
 
 
 class MathTaskGenerator(Generic[TParams], metaclass=abc.ABCMeta):
