@@ -39,7 +39,72 @@ class Task96(MathTask[Task96Params]):
         б) найдите ∠{angle_ACD}
     """
 
-    _triangles_params_key = ("triangle_AOB", "triangle_DOC")
+    _figure_template = """
+        [
+            {{
+                "type":"triangle",
+                "name":"{triangle_AOB}"
+            }},
+            {{
+                "type":"triangle",
+                "name":"{triangle_DOC}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_OA}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_OD}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_OB}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_OC}"
+            }},
+            {{
+                "type":"angle",
+                "name":"1",
+                "value":{angle_1_value}
+            }},
+            {{
+                "type":"angle",
+                "name":"2",
+                "value":{angle_2_value}
+            }},
+            {{
+                "type":"angle",
+                "name":"{angle_ACD}"
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{triangle_AOB}",
+                    "{triangle_DOC}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{side_OA}",
+                    "{side_OD}
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{side_OB}",
+                    "{side_OC}
+                ]
+            }}
+        ]
+    """
 
 
 class Task96Generator(MathTaskGenerator[Task96Params]):

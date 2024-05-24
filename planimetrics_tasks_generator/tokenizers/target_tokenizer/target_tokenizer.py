@@ -8,18 +8,20 @@ from math_tasks_generator.helpers.functions import units as UNITS_TOKENS
 
 
 FIGURE_TOKENS = (
-    '[{',
-    '}]',
     '"type":', 
     '"name":',
     '"length":',
+    '"value"',
     '"rel_type":',
     '"objects":[',
     '"triangle"',
     '"line"',
+    '"angle"',
     '"relation"',
+    '"equality"',
     '"difference"',
     '"difference":',
+    '"intersection"',
     '"-',
 )
 MULTIPLE_SYMBOL_TOKENS = FIGURE_TOKENS + UNITS_TOKENS

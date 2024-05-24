@@ -40,7 +40,68 @@ class Task95(MathTask[Task95Params]):
         б) найдите {side_1} и {side_2}, если {side_4} = {side_4_size} {units}, {side_3} = {side_3_size} {units}
     """
 
-    _triangles_params_key = ("triangle_1", "triangle_2")
+    _figure_template = """
+        [
+            {{
+                "type":"triangle",
+                "name":"{triangle_1}"
+            }},
+            {{
+                "type":"triangle",
+                "name":"{triangle_2}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_1}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_2}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_3}",
+                "length":"{side_3_size} {units}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_4}",
+                "length":"{side_4_size} {units}"
+            }},
+            {{
+                "type":"angle",
+                "name":"1"
+            }},
+            {{
+                "type":"angle",
+                "name":"2"
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{triangle_1}",
+                    "{triangle_2}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{side_2}",
+                    "{side_4}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "1",
+                    "2"
+                ]
+            }}
+        ]
+    """
 
 
 class Task95Generator(MathTaskGenerator[Task95Params]):

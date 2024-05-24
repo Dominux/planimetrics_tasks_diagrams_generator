@@ -30,7 +30,42 @@ class Task97(MathTask[Task97Params]):
         Докажите, что △{triangle_ABC} = △{triangle_CDA}.
     """
 
-    _triangles_params_key = ("triangle_ABC", "triangle_CDA")
+    _figure_template = """
+        [
+            {{
+                "type":"triangle",
+                "name":"{triangle_ABC}
+            }},
+            {{
+                "type":"triangle",
+                "name":"{triangle_CDA}
+            }},
+            {{
+                "type":"line",
+                "name":"{line_AC}
+            }},
+            {{
+                "type":"line",
+                "name":"{line_BD}
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{triangle_ABC}",
+                    "{triangle_CDA}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"intersection",
+                "objects":[
+                    "{line_AC}",
+                    "{line_BD}"
+                ]
+            }},
+        ]
+    """
 
 
 class Task97Generator(MathTaskGenerator[Task97Params]):

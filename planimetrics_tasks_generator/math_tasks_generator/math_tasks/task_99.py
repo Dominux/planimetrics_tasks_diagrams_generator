@@ -29,7 +29,62 @@ class Task99(MathTask[Task99Params]):
         ∠{point_C}{point_B}{point_D} = ∠{point_D}{point_E}{point_C}
     """
 
-    _triangles_params_key = ("triangle_ABC", "triangle_A1B1C1")
+    _figure_template = """
+        [
+            {{
+                "type":"line",
+                "name":"{point_A}{point_C}"
+            }},
+            {{
+                "type":"line",
+                "name":"{point_A}{point_D}"
+            }},
+            {{
+                "type":"line",
+                "name":"{point_A}{point_B}"
+            }},
+            {{
+                "type":"line",
+                "name":"{point_A}{point_E}"
+            }},
+            {{
+                "type":"angle",
+                "name":"{point_C}{point_A}{point_D}",
+            }},
+            {{
+                "type":"angle",
+                "name":"{point_C}{point_B}{point_D}",
+            }},
+            {{
+                "type":"angle",
+                "name":"{point_D}{point_E}{point_C}",
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{point_A}{point_C}",
+                    "{point_A}{point_D}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{point_A}{point_B}",
+                    "{point_A}{point_E}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"equality",
+                "objects":[
+                    "{point_C}{point_B}{point_D}",
+                    "{point_D}{point_E}{point_C}"
+                ]
+            }},
+        ]
+    """
 
 
 class Task99Generator(MathTaskGenerator[Task99Params]):
