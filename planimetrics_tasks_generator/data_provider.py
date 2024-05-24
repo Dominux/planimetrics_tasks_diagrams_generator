@@ -23,9 +23,6 @@ class DataProvider:
     def iter_src(self):
         return (pair[0] for pair in self._pairs)
     
-    def iter_tgt(self):
-        return (pair[1] for pair in self._pairs)
-    
     @classmethod
     def build(cls, corpus_filepath: "Path | str") -> "DataProvider":
         pairs = []
