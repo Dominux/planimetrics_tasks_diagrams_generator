@@ -42,6 +42,29 @@ class Task90(MathTask[Task90Params]):
             {{
                 "type":"triangle",
                 "name":"{triangle}"
+            }},
+            {{
+                "type":"line",
+                "name":"{side_1}",
+                "length":"{side_1_size} {units}"
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"difference",
+                "difference":"2x",
+                "objects":[
+                    "{side_2}",
+                    "{side_1}"
+                ]
+            }},
+            {{
+                "type":"relation",
+                "rel_type":"difference",
+                "difference":"-{side_3_side_2_diff} {units}",
+                "objects":[
+                    "{side_3}",
+                    "{side_2}"
+                ]
             }}
         ]
     """

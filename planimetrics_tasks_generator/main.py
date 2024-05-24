@@ -8,7 +8,8 @@ from models import Seq2SeqTransformer, train_epoch, validate, evaluate, translat
 from settings import (
     EMB_SIZE, 
     FFN_HID_DIM, 
-    LEARNING_RATE, 
+    LEARNING_RATE,
+    MANUAL_SEED, 
     NHEAD, 
     NUM_DECODER_LAYERS, 
     NUM_ENCODER_LAYERS, 
@@ -22,6 +23,9 @@ from tokenizers.target_tokenizer.target_tokenizer import TargetTokenizer
 
 
 def main():
+    # 0. Setting manual seed
+    torch.manual_seed(MANUAL_SEED)
+
     # 1. Building a data provider
     data_provider = DataProvider.build("dataset")
 

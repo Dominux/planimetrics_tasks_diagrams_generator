@@ -3,6 +3,7 @@ import typing as t
 import torch
 
 from models.constants import DEVICE
+from settings import EMB_SIZE
 from tokenizers.constants import END_IDX, PAD_IDX, START_IDX
 
 if t.TYPE_CHECKING:
@@ -91,13 +92,13 @@ def validate(model, loss_fn, dataloader: "DataLoader"):
     return losses / len(dataloader)
 
 # function to generate output sequence using greedy algorithm
-def greedy_decode(model, src, src_mask, max_len, start_symbol):
+def greedy_decode(model, src, src_mask, start_symbol):
     src = src.to(DEVICE)
     src_mask = src_mask.to(DEVICE)
 
     memory = model.encode(src, src_mask)
     ys = torch.ones(1, 1).fill_(start_symbol).type(torch.long).to(DEVICE)
-    for _ in range(max_len-1):
+    for _ in range(EMB_SIZE):
         memory = memory.to(DEVICE)
         tgt_mask = generate_square_subsequent_mask(ys.size(0)).type(torch.bool).to(DEVICE)
         out = model.decode(ys, memory, tgt_mask)
@@ -132,8 +133,7 @@ def translate(
     tgt_tokens = greedy_decode(
         model, 
         src, 
-        src_mask, 
-        max_len=num_tokens + 5, 
+        src_mask,
         start_symbol=START_IDX
     ).flatten()
     return tgt_tokenizer.decode(tgt_tokens.cpu().numpy())

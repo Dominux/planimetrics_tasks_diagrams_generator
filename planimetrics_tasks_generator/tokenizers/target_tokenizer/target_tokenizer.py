@@ -4,6 +4,7 @@ import torch
 
 from tokenizers.base import BaseTokenizer
 from tokenizers.constants import SPECIAL_TOKENS, SUBSCRIPT_NUMBERS, START_IDX, END_IDX
+from math_tasks_generator.helpers.functions import units as UNITS_TOKENS
 
 
 FIGURE_TOKENS = (
@@ -17,11 +18,18 @@ FIGURE_TOKENS = (
     '"triangle"',
     '"line"',
     '"relation"',
+    '"difference"',
+    '"difference":',
+    '"-',
 )
+MULTIPLE_SYMBOL_TOKENS = FIGURE_TOKENS + UNITS_TOKENS
+JSON_TOKENS = (' ', '{', '}', '[', ']', ',', '"', ":")
 DEFAULT_VOCAB = [
     *SPECIAL_TOKENS,
-    *FIGURE_TOKENS,
-    *string.printable,
+    *MULTIPLE_SYMBOL_TOKENS,
+    *JSON_TOKENS,
+    *string.ascii_lowercase,
+    *string.digits,
     *SUBSCRIPT_NUMBERS,
 ]
 
@@ -43,7 +51,7 @@ class TargetTokenizer(BaseTokenizer):
             to_continue = False
             reminder = text[i:]
 
-            for fig_word in FIGURE_TOKENS:
+            for fig_word in MULTIPLE_SYMBOL_TOKENS:
                 if reminder.startswith(fig_word):
 
                     index = self.word2index[fig_word]
