@@ -34,5 +34,5 @@ def run_math_task(
             f.write(task.prompt)
 
         # Saving vector
-        with filepath.with_suffix(".figure.json").open("w") as f:
+        with filepath.with_suffix(".figure").open("w") as f:
             f.write(task.figure)

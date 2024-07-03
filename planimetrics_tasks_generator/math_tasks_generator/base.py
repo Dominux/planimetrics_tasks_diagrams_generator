@@ -32,8 +32,7 @@ class MathTask(Generic[TParams], metaclass=abc.ABCMeta):
 
     @property
     def figure(self) -> str:
-        figure = self._figure_template.format_map(asdict(self._params))
-        return self.minify_text(figure)
+        return str(self._task_number)
 
     @staticmethod
     def minify_text(raw_text: str, sep: str = "") -> str:
