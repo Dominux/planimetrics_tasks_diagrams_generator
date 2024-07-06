@@ -11,3 +11,9 @@ from .task_145 import Task145Params, Task145, Task145Generator
 from .task_146 import Task146Params, Task146, Task146Generator
 
 from .task_401 import Task401Params, Task401, Task401Generator
+from .task_402 import Task402Params, Task402, Task402Generator
+from .task_406 import Task406Params, Task406, Task406Generator
+
+from .task_717 import Task717Params, Task717, Task717Generator
+from .task_730 import Task730Params, Task730, Task730Generator
+from .task_732 import Task732Params, Task732, Task732Generator
