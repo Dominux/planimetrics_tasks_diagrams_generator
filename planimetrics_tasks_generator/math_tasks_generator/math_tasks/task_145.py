@@ -30,7 +30,7 @@ class Task145(MathTask[Task145Params]):
 class Task145Generator(MathTaskGenerator[Task145Params]):
     @staticmethod
     def gen_params():
-        points = get_random_letters(6)
+        points = get_random_letters(4)
 
         return Task145Params(
             point_1=points[0],

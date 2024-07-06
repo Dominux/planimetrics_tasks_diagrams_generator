@@ -8,3 +8,6 @@ from .task_99 import Task99Params, Task99, Task99Generator
 
 from .task_144 import Task144Params, Task144, Task144Generator
 from .task_145 import Task145Params, Task145, Task145Generator
+from .task_146 import Task146Params, Task146, Task146Generator
+
+from .task_401 import Task401Params, Task401, Task401Generator
