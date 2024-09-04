@@ -50,43 +50,60 @@ def main():
 
     test_dataset = TasksDataset(test_data, src_tokenizer, tgt_tokenizer)
 
-    # 5. Initializing models
-    transformer = Seq2SeqTransformer(
-        NUM_ENCODER_LAYERS, 
-        NUM_DECODER_LAYERS, 
-        EMB_SIZE,
-        NHEAD, 
-        len(src_tokenizer), 
-        len(tgt_tokenizer), 
-        FFN_HID_DIM
-    )
+    experiments = []
 
-    # 6. Setting loss function and optimizer
-    loss_fn = torch.nn.CrossEntropyLoss(ignore_index=PAD_IDX)
-    optimizer = torch.optim.Adam(
-        transformer.parameters(), 
-        lr=LEARNING_RATE, 
-        betas=(0.9, 0.98), 
-        eps=1e-9
-    )
+    for epochs_number in [10, 12, 14, 16, 18, 20]:
+        epochs_experiment = []
 
-    # 7. Learning
-    for epoch in range(1, NUM_EPOCHS + 1):
-        start_time = timer()
-        train_loss = train_epoch(transformer, loss_fn, optimizer, train_dataloader)
-        end_time = timer()
-        val_loss = validate(transformer, loss_fn, val_dataloader)
-        print(f"Epoch: {epoch}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Epoch time = {(end_time - start_time):.2f}s")
+        for _ in range(5):
 
-    # 8. Testing
-    right_translations = evaluate(transformer, test_dataset, test_data, src_tokenizer, tgt_tokenizer)
-    print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
+            # 5. Initializing models
+            transformer = Seq2SeqTransformer(
+                NUM_ENCODER_LAYERS, 
+                NUM_DECODER_LAYERS, 
+                EMB_SIZE,
+                NHEAD, 
+                len(src_tokenizer), 
+                len(tgt_tokenizer), 
+                FFN_HID_DIM
+            )
 
-    src = "Сторона ZY треугольника ZYH равна 14 мм, сторона YH вдвое больше стороны ZY, а сторона HZ на 21 мм меньше стороны YH. Найдите периметр треугольника ZYH."
-    expected_tgt = 'zyh'
+            # 6. Setting loss function and optimizer
+            loss_fn = torch.nn.CrossEntropyLoss(ignore_index=PAD_IDX)
+            optimizer = torch.optim.Adam(
+                transformer.parameters(), 
+                lr=LEARNING_RATE, 
+                betas=(0.9, 0.98), 
+                eps=1e-9
+            )
 
-    output = translate(transformer, src, src_tokenizer, tgt_tokenizer)
-    print(f"input: {src}, expected: {expected_tgt}, got: {output}")
+            # 7. Learning
+            for epoch in range(1, epochs_number + 1):
+                start_time = timer()
+                train_loss = train_epoch(transformer, loss_fn, optimizer, train_dataloader)
+                end_time = timer()
+                val_loss = validate(transformer, loss_fn, val_dataloader)
+                print(f"Epoch: {epoch}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Epoch time = {(end_time - start_time):.2f}s")
+
+            # 8. Testing
+            right_translations = evaluate(transformer, test_dataset, test_data, src_tokenizer, tgt_tokenizer)
+            print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
+
+            src = "Сторона ZY треугольника ZYH равна 14 мм, сторона YH вдвое больше стороны ZY, а сторона HZ на 21 мм меньше стороны YH. Найдите периметр треугольника ZYH."
+            expected_tgt = 'zyh'
+
+            output = translate(transformer, src, src_tokenizer, tgt_tokenizer)
+            print(f"input: {src}, expected: {expected_tgt}, got: {output}")
+
+            score = right_translations / len(test_dataset)
+            epochs_experiment.append(score)
+        
+        experiments.append(epochs_experiment)
+
+    with open('experiments.csv', 'w') as f:
+        for epoch in experiments:
+            line = ','.join(str(_) for _ in epoch)
+            f.write(f'{line}\n')
 
 
 if __name__ == "__main__":
