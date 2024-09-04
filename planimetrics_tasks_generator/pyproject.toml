@@ -9,6 +9,8 @@ packages = [{include = "math_tasks_generator"}, {include = "tokenizers"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+torch = "^2.4.0"
+numpy = "^2.1.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.1.0"
