@@ -1,7 +1,6 @@
 import os
 from pathlib import Path
 import random
-import re
 import typing as t
 if t.TYPE_CHECKING:
     from typing_extensions import Self
@@ -67,7 +66,7 @@ class DataProvider:
         return self, val_data, test_data
 
 
-class TrianglesTasksDataProvider(DataProvider):
+class TasksDataProvider(DataProvider):
     @classmethod
     def build(cls, corpus_filepath: Path | str) -> "Self":
         if isinstance(corpus_filepath, str):
@@ -75,25 +74,28 @@ class TrianglesTasksDataProvider(DataProvider):
 
         pairs = []
 
-        regex = re.compile(r"[A-Z]{3}")
-
         with corpus_filepath.open() as f:
             for i, line in enumerate(f):
-                triangle_match = re.search(regex, line)
-                assert triangle_match, f'Row {i}, line: "{line:.20}..."'
-                pairs.append((line, triangle_match[0]))
+                if not i:
+                    continue
+
+                line = line.strip() # cleaninng from whitespace sht around the line
+                x, y = line.split("\t")
+                assert x and y, f'Row {i}, line: "{line:.20}..."'
+                pairs.append((x, y))
 
         return cls(pairs)
 
     def augment_data(self, factor: int = 5):
-        # Actually, the data isn't clear, it contains a lot of common triangle names
+        # Actually, the data isn't clear, it contains a lot of common names
         # Therefore it needs to be replaced with arbitrary names
         new_pairs = []
 
-        for pair in self._pairs:
+        for x, y in self._pairs:
+            figure_type, name = y.split()
             for _ in range(factor):
-                random_triangle_name = "".join(get_random_letters(3))
-                new_task_text = pair[0].replace(pair[1], random_triangle_name)
-                new_pairs.append((new_task_text, random_triangle_name))
+                random_figure_name = "".join(get_random_letters(len(name)))
+                new_task_text = x.replace(name, random_figure_name)
+                new_pairs.append((new_task_text, f'{figure_type} {random_figure_name}'))
 
         self._pairs = new_pairs
