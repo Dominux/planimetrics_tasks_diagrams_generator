@@ -5,3 +5,23 @@
 ## Architecture
 
 ![Data arhitecture scheme](arch.excalidraw.svg)
+
+### Example output format
+
+```json
+[
+  {
+    "figure": "triangle",
+    "name": "ABC"
+  },
+  {
+    "figure": "triangle",
+    "name": "A1B1C1"
+  },
+  {
+    "figure": "line",
+    "name": "AB",
+    "length": "14 cm"
+  }
+]
+```
