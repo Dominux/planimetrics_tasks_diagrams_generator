@@ -21,7 +21,7 @@
   {
     "figure": "line",
     "name": "AB",
-    "length": "14 cm"
+    "length": "14cm"
   }
 ]
 ```
