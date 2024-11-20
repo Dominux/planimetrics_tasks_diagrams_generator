@@ -154,7 +154,15 @@ def evaluate(
         translated = translate(model, src, src_tokenizer, tgt_tokenizer)
        
         # HACK: temporaly since we don't need the exact order
-        if set(translated) == set(expected):
+        splited_parts = translated.split()
+        if len(splited_parts) != 2:
+            continue
+
+        got_type, got_name = splited_parts
+
+        expected_type, expected_name = expected.split()
+
+        if got_type == expected_type and set(got_name) == set(expected_name):
             right_translations_counter += 1
     
     return right_translations_counter
