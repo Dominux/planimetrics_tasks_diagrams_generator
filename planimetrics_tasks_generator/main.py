@@ -52,7 +52,7 @@ def main():
 
     experiments = []
 
-    for _ in range(5):
+    for _ in range(1):
         epoch_experiments = []
 
         # 5. Initializing models
@@ -83,14 +83,12 @@ def main():
             val_loss = validate(transformer, loss_fn, val_dataloader)
             print(f"Epoch: {epoch}, Train loss: {train_loss:.4f}, Val loss: {val_loss:.4f}, Epoch time = {(end_time - start_time):.2f}s")
 
-            # 8. Testing
-            right_translations = evaluate(transformer, test_dataset, test_data, src_tokenizer, tgt_tokenizer)
-            print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
-
-            score = right_translations / len(test_dataset)
-            epoch_experiments.append(score)
 
         experiments.append(epoch_experiments)
+
+    # # 8. Testing
+    right_translations = evaluate(transformer, test_dataset, test_data, src_tokenizer, tgt_tokenizer)
+    print(f"Evaluation score: {right_translations / len(test_dataset)} ({right_translations}/{len(test_dataset)} right translations)")
 
     with open('experiments.csv', 'w') as f:
         for experiment in experiments:

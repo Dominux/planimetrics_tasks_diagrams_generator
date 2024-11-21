@@ -13,9 +13,19 @@ FIGURE_TOKENS = (
     'trapezoid',
     'square',
 )
+JSON_TOKENS = (
+    '"',
+    '[',
+    ']',
+    '{',
+    '}',
+    ':',
+    ',',
+)
 DEFAULT_VOCAB = (
-    *SPECIAL_TOKENS, 
-    *FIGURE_TOKENS, 
+    *SPECIAL_TOKENS,
+    *FIGURE_TOKENS,
+    *JSON_TOKENS,
     *string.ascii_lowercase,
     ' ',
 )
@@ -27,13 +37,13 @@ class TargetTokenizer(BaseTokenizer):
 
     def __len__(self) -> int:
         return len(self.index2word)
-    
+
     def encode(self, text: str):
         """Kinda tricky way"""
         text = self.clear(text)
 
         vector = []
-        i = 0 
+        i = 0
         while i < len(text):
             to_continue = False
             reminder = text[i:]
@@ -50,18 +60,18 @@ class TargetTokenizer(BaseTokenizer):
 
             if to_continue:
                 continue
-            
+
             symbol = text[i]
             index = self.word2index[symbol]
             vector.append(index)
             i += 1
-        
+
         return torch.tensor((START_IDX, *vector, END_IDX))
-            
+
 
     def decode_index(self, index: int) -> str:
         return self.index2word[index]
-    
+
     @classmethod
     def clear(cls, tgt: str) -> str:
         return tgt.lower()

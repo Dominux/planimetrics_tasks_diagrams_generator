@@ -1,6 +1,8 @@
 import os
-from pathlib import Path
+from copy import deepcopy
+import json
 import random
+from pathlib import Path
 import typing as t
 if t.TYPE_CHECKING:
     from typing_extensions import Self
@@ -19,13 +21,13 @@ class DataProvider:
 
     def __len__(self):
         return len(self._pairs)
-    
+
     def __getitem__(self, index: "int"):
         return self._pairs[index]
-    
+
     def iter_src(self):
         return (pair[0] for pair in self._pairs)
-    
+
     @classmethod
     def build(cls, corpus_filepath: "Path | str") -> "Self":
         pairs = []
@@ -49,7 +51,7 @@ class DataProvider:
         return cls(pairs)
 
     def train_val_test(
-        self, val_fraction: "float", test_fraction: "float" 
+        self, val_fraction: "float", test_fraction: "float"
     ) -> "tuple[Self, Self, Self]":
         """Divides the original dataprovider onto train, validation and test ones"""
 
@@ -92,10 +94,18 @@ class TasksDataProvider(DataProvider):
         new_pairs = []
 
         for x, y in self._pairs:
-            figure_type, name = y.split()
+            y_json = json.loads(y)
+
             for _ in range(factor):
-                random_figure_name = "".join(get_random_letters(len(name)))
-                new_task_text = x.replace(name, random_figure_name)
-                new_pairs.append((new_task_text, f'{figure_type} {random_figure_name}'))
+                new_x = x
+                new_y_json = deepcopy(y_json)
+
+                for i, figure in enumerate(y_json):
+                    old_name = figure["name"]
+                    new_name = "".join(get_random_letters(len(old_name)))
+                    new_x = new_x.replace(figure["name"], new_name)
+                    new_y_json[i]["name"] = new_name
+
+                new_pairs.append((new_x, json.dumps(new_y_json)))
 
         self._pairs = new_pairs

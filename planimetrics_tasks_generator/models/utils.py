@@ -43,12 +43,12 @@ def train_epoch(model: "torch.nn.Module", loss_fn, optimizer, dataloader: "DataL
         src_mask, tgt_mask, src_padding_mask, tgt_padding_mask = create_mask(src, tgt_input)
 
         logits = model(
-            src, 
-            tgt_input, 
-            src_mask, 
+            src,
+            tgt_input,
+            src_mask,
             tgt_mask,
-            src_padding_mask, 
-            tgt_padding_mask, 
+            src_padding_mask,
+            tgt_padding_mask,
             src_padding_mask
         )
 
@@ -76,12 +76,12 @@ def validate(model, loss_fn, dataloader: "DataLoader"):
         src_mask, tgt_mask, src_padding_mask, tgt_padding_mask = create_mask(src, tgt_input)
 
         logits = model(
-            src, 
-            tgt_input, 
-            src_mask, 
+            src,
+            tgt_input,
+            src_mask,
             tgt_mask,
-            src_padding_mask, 
-            tgt_padding_mask, 
+            src_padding_mask,
+            tgt_padding_mask,
             src_padding_mask
         )
 
@@ -111,7 +111,7 @@ def greedy_decode(model, src, src_mask, start_symbol):
             [
                 ys,
                 torch.ones(1, 1).type_as(src.data).fill_(next_word)
-            ], 
+            ],
             dim=0
         )
         if next_word == END_IDX:
@@ -122,7 +122,7 @@ def greedy_decode(model, src, src_mask, start_symbol):
 # actual function to translate input sentence into target language
 def translate(
     model: "torch.nn.Module",
-    src_sentence: "str", 
+    src_sentence: "str",
     src_tokenizer: "SourceTokenizer",
     tgt_tokenizer: "TargetTokenizer"
 ):
@@ -131,19 +131,19 @@ def translate(
     num_tokens = src.shape[0]
     src_mask = torch.zeros(num_tokens, num_tokens).type(torch.bool)
     tgt_tokens = greedy_decode(
-        model, 
-        src, 
+        model,
+        src,
         src_mask,
         start_symbol=START_IDX
     ).flatten()
     return tgt_tokenizer.decode(tgt_tokens.cpu().numpy())
 
 def evaluate(
-    model, 
-    dataset: "TasksDataset", 
+    model,
+    dataset: "TasksDataset",
     data_provider: "DataProvider",
     src_tokenizer: "SourceTokenizer",
-    tgt_tokenizer: "TargetTokenizer" 
+    tgt_tokenizer: "TargetTokenizer"
 ):
     right_translations_counter = 0
 
@@ -152,17 +152,9 @@ def evaluate(
         expected = tgt_tokenizer.clear(tgt)
 
         translated = translate(model, src, src_tokenizer, tgt_tokenizer)
-       
-        # HACK: temporaly since we don't need the exact order
-        splited_parts = translated.split()
-        if len(splited_parts) != 2:
-            continue
 
-        got_type, got_name = splited_parts
-
-        expected_type, expected_name = expected.split()
-
-        if got_type == expected_type and set(got_name) == set(expected_name):
+        # TODO: rewrite algo to make it less strict since it does not need to be so strict
+        if expected == translated:
             right_translations_counter += 1
-    
+
     return right_translations_counter
