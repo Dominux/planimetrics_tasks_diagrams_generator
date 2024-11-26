@@ -103,9 +103,13 @@ class TasksDataProvider(DataProvider):
 
                 for i, figure in enumerate(y_json):
                     old_name = figure["name"]
-                    new_name = "".join(get_random_letters(len(old_name)))
-                    new_x = new_x.replace(figure["name"], new_name)
-                    new_y_json[i]["name"] = new_name
+
+                    letters = get_random_letters(len(old_name))
+
+                    map_table = str.maketrans(dict(zip(tuple(old_name), letters)))
+                    new_x = new_x.translate(map_table)
+
+                    new_y_json[i]["name"] = "".join(letters)
 
                 new_pairs.append((new_x, json.dumps(new_y_json)))
 
