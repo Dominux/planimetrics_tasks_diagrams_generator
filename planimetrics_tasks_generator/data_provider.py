@@ -79,6 +79,7 @@ class TasksDataProvider(DataProvider):
         with corpus_filepath.open() as f:
             for i, line in enumerate(f):
                 if not i:
+                    # skipping first row
                     continue
 
                 line = line.strip() # cleaninng from whitespace sht around the line
