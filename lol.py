@@ -30,13 +30,23 @@ import string, random
 #         figure_output = f'[{{"type": "{figure_type}", "name": {"".join(letters)}}}]'
 #         f.write(text + '\t' + figure_output + '\n')
 
-lines = []
+# lines = []
 
-with open('lol.tsv') as f1, open('tasks.tsv') as f2:
-    lines.extend(f1.readlines())
-    lines.extend(f2.readlines())
+# with open('lol.tsv') as f1, open('tasks.tsv') as f2:
+#     lines.extend(f1.readlines())
+#     lines.extend(f2.readlines())
 
-random.shuffle(lines)
+# random.shuffle(lines)
 
-with open('kek.tsv', 'w') as f:
-    f.writelines(lines)
+# with open('kek.tsv', 'w') as f:
+#     f.writelines(lines)
+
+lol = 'YDOF}]\n'
+
+with open('tasks.tsv') as f, open('lol.tsv', 'w') as output:
+    for line in f:
+        if line[:len(line) - len(lol)].endswith('"name": '):
+            figure_name = line[len(line) - len(lol):len(line) - len(lol) + 4]
+            line = line[:len(line) - len(lol)] + f'"{figure_name}"}}]\n'
+
+        output.write(line)
