@@ -1,29 +1,42 @@
 import string, random
 
 
-def get_random_letters(length: int) -> list[str]:
-    alphabet = list(string.ascii_uppercase)
-    random.shuffle(alphabet)
-    return alphabet[:length]
+# def get_random_letters(length: int) -> list[str]:
+#     alphabet = list(string.ascii_uppercase)
+#     random.shuffle(alphabet)
+#     return alphabet[:length]
 
-output_lines = []
+# TEMPLATE = "Основания {} {}{} = {} см, {}{} = {} см. Найти диагональ."
 
-with open("planimetrics_tasks_generator/datasets/lmao.tsv") as f:
-    for i, line in enumerate(f):
-        line = line[0].capitalize() + line[1:-2]
-        line_splitted = line.split("треугольника")
+# FIGURES = {
+#     'quadrilateral': 'четырехугольника',
+#     'parallelogram': 'параллелограмма',
+#     'trapezoid': 'трапеции',
+#     'rectangle': 'прямоугольника',
+#     'square': 'квадрата',
+# }
 
-        for _ in range(2):
-            letters = get_random_letters(6)
-            t1, t2 = "".join(letters[:3]), "".join(letters[3:])
+# with open('lol.tsv', 'a') as f:
 
-            line = line_splitted[0] + "треугольника " + t1 + line_splitted[1] + "треугольника " + t2 + line_splitted[2] + f'\t[{{"figure": "triangle", "name": "{t1}"}}, {{"figure", "triangle", "name": "{t2}"}}]\n'
-            output_lines.append(line)
+#     for _ in range(200):
+#         letters = get_random_letters(4)
 
-        # line = line_splitted[0] + "треугольника" + " ABC" + line_splitted[1] + "треугольника" + " DEF" + line_splitted[2] + '\t[{"figure": "triangle", "name": "ABC"}, {"figure", "triangle", "name": "DEF"}]'
-        # output_f.write(line + '\n')
+#         figure_type = random.choice(list(FIGURES))
+#         diff_1 = random.randint(3, 25)
+#         diff_2 = random.randint(2, 25)
+#         diff_3 = random.randint(2, 25)
 
-random.shuffle(output_lines)
+#         text = TEMPLATE.format(FIGURES[figure_type], letters[0], letters[1], diff_1, letters[2], letters[3], diff_2)
+#         figure_output = f'[{{"type": "{figure_type}", "name": {"".join(letters)}}}]'
+#         f.write(text + '\t' + figure_output + '\n')
 
-with open("planimetrics_tasks_generator/datasets/triangels_new.tsv", "w") as f:
-    f.writelines(output_lines)
+lines = []
+
+with open('lol.tsv') as f1, open('tasks.tsv') as f2:
+    lines.extend(f1.readlines())
+    lines.extend(f2.readlines())
+
+random.shuffle(lines)
+
+with open('kek.tsv', 'w') as f:
+    f.writelines(lines)
